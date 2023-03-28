@@ -1,8 +1,12 @@
 <template>
 
     <div v-for="(item, index) in this.$store.state.systemer" v-bind:key="index">
-    
-        <div v-if="(  new Date(item.Brugsdato.seconds*1000) <= new Date(new Date().setDate(this.$store.state.todaysDate.getDate() + 1))  )  " class="bg-gradient-to-r to-[#FFFFFF] from-[#FFD4D4] w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]" style="grid-template-columns: 3fr 1fr 1.5fr 1fr 40px">
+        
+        <div v-if="this.$store.state.HideCompleted != item.Opsatstatus && item.Opsatstatus == true "></div>
+
+        <div v-else-if="this.$store.state.HideOutOfDate == true && new Date(item.Brugsdato.seconds*1000) <= new Date(new Date().setDate(this.$store.state.todaysDate.getDate() - 1)) "></div>
+
+        <div v-else-if="( new Date(item.Brugsdato.seconds*1000) <= new Date(new Date().setDate(this.$store.state.todaysDate.getDate() + 1))  )  " class="bg-gradient-to-r to-[#FFFFFF] from-[#FFD4D4] w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]" style="grid-template-columns: 3fr 1fr 1.5fr 1fr 40px">
             <h1 class="col-start-1 col-span-1">{{ item.Systemnavn }}</h1>
             <h1 class="col-start-2 col-span-1"><fa style="cursor: pointer" icon="ellipsis" class="w-auto h-[16px] ml-2"/></h1>
 
@@ -169,7 +173,7 @@
 
 
 <script>
-import {deleteDoc, doc, collection, query, where, getDocs, orderBy} from "firebase/firestore"; 
+import {deleteDoc, doc, collection, query, getDocs, orderBy} from "firebase/firestore"; 
 import { db } from '@/firebase'
 
 
@@ -180,73 +184,43 @@ export default {
     methods: {
         async editFromDB(e,index){
             this.$store.state.TempIndex = index
-            this.$store.state.visiblePage = "UpdateProdukt"
+            this.$store.state.visiblePage = "UpdateSystemer"
         },
 
         async deleteFromDB(e,index){
             try {
-                await deleteDoc(doc(db, "produkter", this.$store.state.lager[index].id));
+                await deleteDoc(doc(db, "systemer", this.$store.state.systemer[index].id));
 
-                console.log("deleted " + this.$store.state.lager[index].id + "(" + this.$store.state.lager[index].Produktnavn + ")" + " from: produkter");
+                console.log("deleted " + this.$store.state.systemer[index].id + "(" + this.$store.state.systemer[index].Produktnavn + ")" + " from: systemer");
 
-                //let tempArr = []
-
-                try {
-                    const q = query(collection(db, "stock"), where("produkt_ref_id", "==", this.$store.state.lager[index].id))
-
-                    const docRef = await getDocs(q)
-                    docRef.forEach((document) => {
-
-                        deleteDoc(doc(db, "stock", document.id));
-                        console.log("deleted " + document.id + " from: stock");
-
-                    });
-
-                console.log("read data from: stock");
-                } catch (error) {
-                console.error("ERROR reading data from: stock " + error);
-                 }
                 this.reloadData()
 
 
 
                 } catch (error) {
-                console.error("ERROR deleting " + this.$store.state.lager[index].id + " from: produkter " + error );
+                console.error("ERROR deleting " + this.$store.state.systemer[index].id + " from: systemer " + error );
             }
         },
 
         async reloadData(){
-                try {
-                    const docRef1 = await getDocs(collection(db, "produkter"));
-                    this.$store.state.lager = []
+            try {
+                    const docRef = await getDocs(query(collection(db, "systemer"), orderBy('Brugsdato')));
 
-                    docRef1.forEach((doc) => {
-                        this.$store.state.lager.push({Produktnavn: doc.data().Produktnavn, Qt_på_lager: 0, Qt_prøveperiode: 0, id: doc.id})
-                    });
+                    this.$store.state.systemer = []
 
-                console.log("read data from: produkter");
-                } catch (error) {
-                console.error("ERROR reading data from: produkter " + error);
-                
-                }
 
-                try {
-                    const docRef2 = await getDocs(query(collection(db, "stock"), orderBy('date')));
-
-                    this.$store.state.lagerUdInd = []
-
-                    docRef2.forEach((doc) => {
-                        let temp_indexing_of_arr = this.$store.state.lager.map(ref => ref.id).indexOf(doc.data().produkt_ref_id);
-                        this.$store.state.lager[temp_indexing_of_arr].Qt_på_lager += doc.data().update
+                    docRef.forEach((doc) => {
                         
-                        this.$store.state.lagerUdInd.unshift({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.data().date.seconds, Update: doc.data().update})
+                        this.$store.state.systemer.push( {Systemnavn: doc.data().Systemnavn, Opsatstatus: doc.data().Opsatstatus, Brugsdato: doc.data().Brugsdato, Brugte_produkter: doc.data().Brugte_produkter, id: doc.id  } )
+
                     });
 
                 console.log("read data from: stock");
+
                 } catch (error) {
                 console.error("ERROR reading data from: stock " + error);
                 
-                }
+            }
         }
 
     }

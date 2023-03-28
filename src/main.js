@@ -12,7 +12,9 @@ const store = createStore({
         systemer: [],
         todaysDate: "",
         visiblePage: "Lager",
-        TempIndex: null
+        TempIndex: null,
+        HideCompleted: true,
+        HideOutOfDate: true
     }
   })
 

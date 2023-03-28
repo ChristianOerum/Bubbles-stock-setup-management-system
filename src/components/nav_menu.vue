@@ -20,7 +20,7 @@
 
             <div class="w-[40px] h-[5px] rounded-md bg-[#00214B] opacity-5 m-4"></div>
 
-            <fa style="cursor: pointer" @click="goToSystemer" icon="square" class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2"/>
+            <fa style="cursor: pointer" @click="goToSystemer" icon="database" class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2"/>
                 <div v-if="this.$store.state.visiblePage == 'Systemer'" class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[230px]"></div>
 
             <fa style="cursor: pointer" @click="goToTilføjSystemer" icon="square-plus" class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2"/>

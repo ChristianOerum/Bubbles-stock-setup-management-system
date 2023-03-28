@@ -9,7 +9,7 @@
                 <div class="w-[100%] h-[100%] row-start-1 row-span-1 rounded-2xl flex flex-row">
 
                     <div class="w-max h-[100%] bg-[#FFD4D4] text-black flex flex-col justify-center items-center rounded-xl font-semibold ml-2">
-                        <p class="p-4 opacity-50">I morgen</p>
+                        <p class="p-4 opacity-50">1 dag!</p>
                     </div>
 
                     <div class="w-max h-[100%] bg-[#FCC3F7] text-black flex flex-col justify-center items-center rounded-xl font-semibold ml-2">
@@ -43,11 +43,11 @@
                             <h1 class="relative left-[15px] text-[#00214B]">Systemer til opsæting</h1>
                             
 
-                            <button v-if="this.hidePastSystems" class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-[193px] absolute"><fa style="cursor: pointer" icon="calendar" class="w-auto text-[14px]"/></button>
-                            <button v-else class="bg-[#EAEEF3] text-[#9AA8BA] w-fit text-[16px] rounded-lg p-2 right-[193px] absolute"><fa style="cursor: pointer" icon="calendar" class="w-auto text-[14px]"/></button>
+                            <button v-if="this.$store.state.HideOutOfDate" @click="handleCalendar" class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-[193px] absolute"><fa style="cursor: pointer" icon="calendar-check" class="w-auto text-[14px]"/></button>
+                            <button v-else @click="handleCalendar" class="bg-[#EAEEF3] text-[#9AA8BA] w-fit text-[16px] rounded-lg p-2 right-[193px] absolute"><fa style="cursor: pointer" icon="calendar-check" class="w-auto text-[14px]"/></button>
 
-                            <button v-if="this.hideOpsat" class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-[160px] absolute"><fa style="cursor: pointer" icon="check" class="w-auto text-[14px]"/></button>
-                            <button v-else class="bg-[#EAEEF3] text-[#9AA8BA] w-fit text-[16px] rounded-lg p-2 right-[160px] absolute"><fa style="cursor: pointer" icon="check" class="w-auto text-[14px]"/></button>
+                            <button v-if="this.$store.state.HideCompleted" @click="handleCompleted" class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-[160px] absolute"><fa style="cursor: pointer" icon="check" class="w-auto text-[14px]"/></button>
+                            <button v-else @click="handleCompleted" class="bg-[#EAEEF3] text-[#9AA8BA] w-fit text-[16px] rounded-lg p-2 right-[160px] absolute"><fa style="cursor: pointer" icon="check" class="w-auto text-[14px]"/></button>
 
 
                             <button @click="goToTilføjSystemPage" class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj opsætning</button>
@@ -75,7 +75,7 @@
                             <h1 class="relative left-[15px] text-[#00214B]">Lager status på opsætninger</h1>
                         </div>
 
-                        <div class="w-[100%] h-[100%] bg-[#EAEEF3] row-start-2 row-span-1 grid items-center p-[18px] text-[14px] font-semibold text-[#9AA8BA]" style="grid-template-columns: 3fr 1fr 1fr 40px">
+                        <div class="w-[100%] h-[100%] bg-[#EAEEF3] row-start-2 row-span-1 grid items-center p-[18px] text-[14px] font-semibold text-[#9AA8BA]" style="grid-template-columns: 2.5fr 1fr 1fr">
                             <h1 class="col-start-1 col-span-1">Produktnavn</h1>
                             <h1 class="col-start-2 col-span-1">Status</h1>
                             <h1 class="col-start-3 col-span-1">Forfald</h1>
@@ -85,7 +85,7 @@
 
                         <div class="w-[100%] h-[100%] row-start-3 row-span-1 overflow-y-scroll [&::-webkit-scrollbar]:hidden">
 
-                            //insert tabs
+                            <LagerStatus_tabs></LagerStatus_tabs>
                                                         
                         </div>
 
@@ -105,13 +105,11 @@
 
 
 <script>
-//import firebase
-import { collection, getDocs, query, orderBy } from "firebase/firestore"; 
-import { db } from '@/firebase'
 
 //comp import
 import Nav_menu from "../components/nav_menu.vue";
 import Systemer_tabs from "../components/systemer_tabs.vue";
+import LagerStatus_tabs from "../components/lagerStatus_tabs.vue"
 
 
 export default {
@@ -126,37 +124,21 @@ export default {
     },
     components: {
         Nav_menu,
-        Systemer_tabs
+        Systemer_tabs,
+        LagerStatus_tabs
     },
     methods: {
         
         goToTilføjSystemPage() {
             this.$store.state.visiblePage = "TilføjSystemer"
+        },
+        handleCalendar(){
+            this.$store.state.HideOutOfDate = !this.$store.state.HideOutOfDate
+        },
+        handleCompleted(){
+            this.$store.state.HideCompleted = !this.$store.state.HideCompleted
         }
 
-    },
-
-    async mounted(){
-            
-            try {
-                    const docRef = await getDocs(query(collection(db, "systemer"), orderBy('Brugsdato')));
-
-                    this.$store.state.systemer = []
-
-
-                    docRef.forEach((doc) => {
-                        
-                        this.$store.state.systemer.push( {Systemnavn: doc.data().Systemnavn, Opsatstatus: doc.data().Opsatstatus, Brugsdato: doc.data().Brugsdato, Brugte_produkter: doc.data().Brugte_produkter  } )
-
-                    });
-
-                console.log("read data from: stock");
-
-                } catch (error) {
-                console.error("ERROR reading data from: stock " + error);
-                
-            }
-
-        }
+    }
 }
 </script>

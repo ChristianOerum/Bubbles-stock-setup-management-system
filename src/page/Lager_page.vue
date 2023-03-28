@@ -74,7 +74,7 @@
 
 <script>
 //import firebase
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc} from "firebase/firestore"; 
 import { db } from '@/firebase'
 
 //comp import
@@ -156,40 +156,6 @@ export default {
             this.$store.state.visiblePage = "TilføjStock"
         }
 
-    },
-
-    async mounted(){
-                try {
-                    const docRef1 = await getDocs(collection(db, "produkter"));
-                    this.$store.state.lager = []
-
-                    docRef1.forEach((doc) => {
-                        this.$store.state.lager.push({Produktnavn: doc.data().Produktnavn, Qt_på_lager: 0, Qt_prøveperiode: 0, id: doc.id})
-                    });
-
-                console.log("read data from: produkter");
-                } catch (error) {
-                console.error("ERROR reading data from: produkter " + error);
-                
-                }
-
-                try {
-                    const docRef2 = await getDocs(query(collection(db, "stock"), orderBy('date')));
-
-                    this.$store.state.lagerUdInd = []
-
-                    docRef2.forEach((doc) => {
-                        let temp_indexing_of_arr = this.$store.state.lager.map(ref => ref.id).indexOf(doc.data().produkt_ref_id);
-                        this.$store.state.lager[temp_indexing_of_arr].Qt_på_lager += doc.data().update
-                        
-                        this.$store.state.lagerUdInd.unshift({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.data().date.seconds, Update: doc.data().update, id: doc.id})
-                    });
-
-                console.log("read data from: stock");
-                } catch (error) {
-                console.error("ERROR reading data from: stock " + error);
-                
-                }
-        }
+    }
 }
 </script>

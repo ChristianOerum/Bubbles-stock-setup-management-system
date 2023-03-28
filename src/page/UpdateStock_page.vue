@@ -12,6 +12,7 @@
             <input placeholder="Vælg korrektions værdi" @keydown="nameKeydown($event)" class="mt-2 indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold" type='text' v-model="correctionValue"/>
             <input type="date" required pattern="\d{4}-\d{2}-\d{2}" class="mt-2 h-[40px] w-[400px] indent-[8px] font-semibold font-[#00214B]" v-model="dateValue"/>
 
+            <textarea placeholder="Beskrivelse (valgfri)" class="p-3 mt-2 indent-[5px] h-[150px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold" type='textarea' v-model="beskrivelse"/>
 
             <button @click="updateStock()" class="bg-[#0097ff] text-white w-fit text-[18px] font-semibold rounded-lg p-2 mt-[20px] right-2 ">Opdater</button>
 
@@ -30,6 +31,7 @@ export default {
             name: this.$store.state.lagerUdInd[this.$store.state.TempIndex].Produktnavn,
             correctionValue: this.$store.state.lagerUdInd[this.$store.state.TempIndex].Update,
             dateValue: new Date((this.$store.state.lagerUdInd[this.$store.state.TempIndex].date)*1000).toISOString().substr(0, 10),
+            beskrivelse: this.$store.state.lagerUdInd[this.$store.state.TempIndex].beskrivelse
 
         }
     },

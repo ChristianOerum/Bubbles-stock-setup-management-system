@@ -8,16 +8,26 @@
 
             <h1 class="font-semibold text-[24px] text-[#00214B] mb-2">Tilføj nyt system</h1>
             
-            <button @click.self="toggleDropdown" class="h-[50px] w-[400px] text-[#00214B] text-left indent-[15px] bg-white font-semibold rounded-lg">{{ SelectedOption.value == null ? "Vælg relateret produkt" : SelectedOption.lable }}</button>
-            <div v-if="this.dropdownOpen" class="w-[400px] max-h-[200px] h-auto bg-white rounded-lg flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                <button v-on:click="dropdownSelect($event, index)" v-for="(item, index) in this.DropdownOptions" v-bind:key="index" class="h-[40px] w-[400px] bg-white text-[#00214B] font-semibold indent-[15px] text-left">{{ item.lable }}</button>
+            <input type="text" placeholder="System navn" class="mt-2 indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold" v-model="SystemNavn">
+
+            <button @click.self="toggleDropdown" class="h-[50px] w-[400px] text-[#00214B] text-left mt-2 indent-[15px] bg-white font-semibold rounded-lg">{{ SelectedOption.value == null ? "Opsat status" : SelectedOption.lable }}</button>
+            <div v-if="this.dropdownOpen" class="w-[400px] max-h-[200px] h-auto bg-white mt-2 rounded-lg flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                <button v-on:click="dropdownSelect($event, index)" v-for="(item, index) in this.DropdownOptions" v-bind:key="index" class="h-[40px] w-[400px] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">{{ item.lable }}</button>
             </div>
 
-            <input placeholder="Vælg korrektions værdi" @keydown="nameKeydown($event)" class="mt-2 indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold" type='text' v-model="correctionValue"/>
             <input type="date" required pattern="\d{4}-\d{2}-\d{2}" class="mt-2 h-[40px] w-[400px] indent-[8px] font-semibold font-[#00214B]" v-model="dateValue"/>
 
+            <p class="indent-[3px] mt-4 font-semibold">Produkter på system</p>
 
-            <button @click="createProdukt" class="bg-[#0097ff] text-white w-fit text-[18px] font-semibold rounded-lg p-2 mt-[20px] right-2 ">Godkend</button>
+            <div class="mt-2 indent-[15px] h-auto w-[400px] rounded-lg rounded-lg overflow-hidden">
+                <div v-for="(item, index) in this.BrugteProdukter" v-bind:key="index" class="flex items-center h-[40px] relative w-[400px] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
+                    <p>{{ item.navn }}</p>
+                    <input type="number" class="w-[70px] absolute right-7 h-[70%] rounded-md text-right focus:outline-[3px] focus:outline outline-offset-0 outline-[#0097ff] font-poppins font-semibold" v-model="BrugteProdukter[index].qt">
+                    <p class="absolute right-3 text-[#00214B]">x</p>
+                </div>
+            </div>
+
+            <button @click="createSystem" class="bg-[#0097ff] text-white w-fit text-[18px] font-semibold rounded-lg p-2 mt-[20px] right-2">Godkend</button>
 
         </div>
 
@@ -25,18 +35,19 @@
 </template>
 
 <script>
-import { collection, addDoc, getDocs} from "firebase/firestore"; 
+import { collection, addDoc} from "firebase/firestore"; 
 import { db } from '@/firebase'
 import Nav_menu from "../components/nav_menu.vue";
 
 export default {
     data() {
         return {
-            correctionValue: "",
             dateValue: null,
             dropdownOpen: false,
-            DropdownOptions: [],
-            SelectedOption: []
+            DropdownOptions: [{lable: "Opsat", value: true},{lable: "Ikke opsat", value: false}],
+            SelectedOption: [],
+            SystemNavn: "",
+            BrugteProdukter: []
 
         }
     },
@@ -64,15 +75,18 @@ export default {
             }
         },
 
-        async createProdukt(){
+        async createSystem(){
                 try {
-                await addDoc(collection(db, "stock"), {
-                    update: Number(this.correctionValue),
-                    produkt_ref_id: this.SelectedOption.value,
-                    date: new Date(this.dateValue)
+                await addDoc(collection(db, "systemer"), {
+                    Brugsdato: new Date(this.dateValue),
+                    Brugte_produkter: this.BrugteProdukter,
+                    Opsatstatus: this.SelectedOption.value,
+                    Systemnavn: this.SystemNavn
+
+
                 }); 
                 
-                this.$store.state.visiblePage = "Lager"
+                this.$store.state.visiblePage = "Systemer"
 
                 console.log("Added document to: stock");
                 } catch (error) {
@@ -83,19 +97,11 @@ export default {
     },
 
     async mounted(){
-        try {
-            const docRef1 = await getDocs(collection(db, "produkter"));
-            this.$store.state.lager = []
-
-            docRef1.forEach((doc) => {
-                this.DropdownOptions.push({lable: doc.data().Produktnavn, value: doc.id})
-            });
-
-            console.log("read data from: produkter");
-            } catch (error) {
-            console.error("ERROR reading data from: produkter " + error);
-            
-            }
+        for (const item of this.$store.state.lager) {
+            this.BrugteProdukter.push({navn: item.Produktnavn, id: item.id, qt: 0})
+        }
+        console.log(this.BrugteProdukter)
     }
+
 }
 </script>
