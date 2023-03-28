@@ -3,7 +3,6 @@
     <div class="h-[100vh] w-[130px]">
         <SVGcreater name="logo" class="h-auto w-[200px] left-[30px] top-[20px] absolute"></SVGcreater>
 
-
         <div class="w-[130px] h-auto absolute top-[100px] flex flex-col justify-center items-center">
 
             <fa style="cursor: pointer" icon="house" class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2"/>
@@ -28,7 +27,9 @@
 
         </div>
 
-        <button @click="clearLocalStorage" class="absolute left-9 bottom-10 font-semibold"><fa style="cursor: pointer" icon="right-from-bracket" class="text-[#00214B] w-full h-[30px] ml-2 text-center m-2"/></button>
+        <button @click="refreshWindow" class="absolute left-9 bottom-[85px] font-semibold"><fa style="cursor: pointer" icon="arrows-rotate" class="text-[#00214B] w-full h-[30px] ml-2 text-center m-2"/></button>
+
+        <button @click="clearLocalStorage" class="absolute left-9 bottom-[30px] font-semibold"><fa style="cursor: pointer" icon="right-from-bracket" class="text-[#00214B] w-full h-[30px] ml-2 text-center m-2"/></button>
     
     
     </div>
@@ -62,6 +63,9 @@ export default {
     goToTilføjSystemer(){
         this.$store.state.visiblePage = "TilføjSystemer"
     },
+    refreshWindow(){
+        location.reload()
+    }
 
     }
 }
