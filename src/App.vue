@@ -2,10 +2,27 @@
 <LoginScreen v-if="password !== VUE_APP_ACCESS_PIN" v-model:modelValue="password">
 </LoginScreen>
 
-<Home v-else>
-</Home>
+<Lager v-else-if="this.$store.state.visiblePage == 'Lager'">
+</Lager>
 
-<button @click="clearLocalStorage" class="absolute right-10 bottom-10">Logout</button>
+<TilføjLager v-else-if="this.$store.state.visiblePage == 'TilføjLager'">
+</TilføjLager>
+
+<TilføjStock v-else-if="this.$store.state.visiblePage == 'TilføjStock'">
+</TilføjStock>
+
+<UpdateProdukt v-else-if="this.$store.state.visiblePage == 'UpdateProdukt'">
+</UpdateProdukt>
+
+<UpdateStock v-else-if="this.$store.state.visiblePage == 'UpdateStock'">
+</UpdateStock>
+
+<Systemer v-else-if="this.$store.state.visiblePage == 'Systemer'">
+</Systemer>
+
+<TilføjSystemer v-else-if="this.$store.state.visiblePage == 'TilføjSystemer'">
+</TilføjSystemer>
+
 
 </template>
 
@@ -14,14 +31,26 @@
 import './assets/tailwind.css'
 //import af dash_page komponent
 import LoginScreen from "./page/Login_screen.vue";
-import Home from "./page/Home_page.vue";
+import Lager from "./page/Lager_page.vue";
+import TilføjLager from "./page/TilføjProdukt_page.vue";
+import TilføjStock from "./page/TilføjStock_page.vue";
+import UpdateProdukt from "./page/UpdateProdukt_page.vue";
+import UpdateStock from "./page/UpdateStock_page.vue";
+import Systemer from "./page/Systemer_page.vue";
+import TilføjSystemer from "./page/TilføjSystem_page.vue";
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'App',
   components: {
     LoginScreen,
-    Home
+    Lager,
+    TilføjLager,
+    TilføjStock,
+    UpdateProdukt,
+    UpdateStock,
+    Systemer,
+    TilføjSystemer
   },
   data() {
     return {
@@ -30,12 +59,10 @@ export default defineComponent({
     }
   },
 
-  methods: {
-    clearLocalStorage(){
-      localStorage.clear();
-      location.reload();
-    }
+  methods: {},
+  mounted(){
+    this.$store.state.todaysDate = new Date(new Date().setHours(0,0,0,0))
 
-  },
+  }
 });
 </script>

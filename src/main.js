@@ -3,8 +3,16 @@ import { createApp } from 'vue'
 
 //main state store
 const store = createStore({
+
+  // this.$store.state.lager
+
     state: {
-        word: "hello"
+        lager: [],
+        lagerUdInd: [],
+        systemer: [],
+        todaysDate: "",
+        visiblePage: "Lager",
+        TempIndex: null
     }
   })
 
