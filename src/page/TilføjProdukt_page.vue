@@ -1,6 +1,5 @@
 <template>
     <div @click.self="goToLagerPage" class="bg-white w-screen h-screen flex flex-col justify-center items-center relative">
-
         <div class="bg-[#F1F7FF] w-auto h-auto rounded-xl flex flex-col justify-center p-5 items-right relative">
 
             <h1 class="font-semibold text-[24px] text-[#00214B] mb-2">Tilføj et nyt produkt</h1>
@@ -13,12 +12,16 @@
         </div>
 
     </div>
+    <Nav_menu></Nav_menu>
 </template>
 
 <script>
 //firebase
 import { collection, addDoc } from "firebase/firestore";
 import { db } from '@/firebase'
+
+//comps
+import Nav_menu from '../components/nav_menu.vue'
 
 //mixins
 import queryFirestore from "../mixins/queryFirestore";
@@ -30,7 +33,7 @@ export default {
         }
     },
     components: {
-
+        Nav_menu
     },
     methods: {
         goToLagerPage() {

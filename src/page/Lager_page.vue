@@ -19,7 +19,7 @@
                         <div
                             class="w-[100%] h-[100%] row-start-1 row-span-1 items-center text-[19px] font-semibold flex flex-row relative">
                             <h1 class="relative left-[15px] text-[#00214B]">Lager</h1>
-                            <button @click="goToTilføjLagerPage"
+                            <button @click="$router.push('/tilføj_produkt')"
                                 class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
                                 produkter</button>
                         </div>
@@ -48,7 +48,7 @@
                         <div
                             class="w-[100%] h-[100%] row-start-1 row-span-1 grid items-center text-[19px] font-semibold relative">
                             <h1 class="relative left-[15px] text-[#00214B]">In/Out oversigt</h1>
-                            <button @click="goToTilføjStockPage"
+                            <button @click="$router.push('/tilføj_stock')"
                                 class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
                                 lager</button>
                         </div>
@@ -158,13 +158,6 @@ export default {
                 console.error("ERROR deleting " + document_id + " from: test " + error);
             }
 
-        },
-
-        goToTilføjLagerPage() {
-            this.$store.state.visiblePage = "TilføjLager"
-        },
-        goToTilføjStockPage() {
-            this.$store.state.visiblePage = "TilføjStock"
         }
 
     }

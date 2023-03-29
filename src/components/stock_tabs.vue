@@ -45,7 +45,7 @@ export default {
     components: {},
     methods: {
         async deleteStock(e, index) {
-
+            console.log(index)
             try {
                 await deleteDoc(doc(db, "stock", this.$store.state.lagerUdInd[index].id));
 
@@ -95,7 +95,7 @@ export default {
 
         editStock(e, index) {
             this.$store.state.TempIndex = index
-            this.$store.state.visiblePage = "UpdateStock"
+            this.$router.push('/update_stock')
         },
     }
 

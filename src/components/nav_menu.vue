@@ -5,7 +5,7 @@
         <div class="w-[130px] h-auto absolute top-[100px] flex flex-col justify-center items-center">
 
             <fa style="cursor: pointer" @click="$router.push('/')" icon="house" class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2" />
-            <div v-if="this.$store.state.visiblePage == 'Home'"
+            <div v-if="this.$router.currentRoute._value.path == '/'"
                 class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[10px]"></div>
 
             <div class="w-[40px] h-[5px] rounded-md bg-[#00214B] opacity-5 m-4"></div>
@@ -13,24 +13,24 @@
 
             <fa style="cursor: pointer" @click="$router.push('/lager')" icon="database"
                 class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2" />
-            <div v-if="this.$store.state.visiblePage == 'Lager'"
+            <div v-if="this.$router.currentRoute._value.path == '/lager'"
                 class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[95px]"></div>
 
             <fa style="cursor: pointer" @click="$router.push('/tilføj_stock')" icon="cart-flatbed"
                 class="text-[#00214B] w-full h-[30px] ml-2 text-center m-2" />
-            <div v-if="this.$store.state.visiblePage == 'TilføjStock'"
+            <div v-if="this.$router.currentRoute._value.path == '/tilføj_stock'"
                 class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[143px]"></div>
 
             <div class="w-[40px] h-[5px] rounded-md bg-[#00214B] opacity-5 m-4"></div>
 
             <fa style="cursor: pointer" @click="$router.push('/systemer')" icon="database"
                 class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2" />
-            <div v-if="this.$store.state.visiblePage == 'Systemer'"
+            <div v-if="this.$router.currentRoute._value.path == '/systemer'"
                 class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[230px]"></div>
 
-            <fa style="cursor: pointer" @click="$router.push('/tilføj_systemer')" icon="square-plus"
+            <fa style="cursor: pointer" @click="$router.push('/tilføj_system')" icon="square-plus"
                 class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2" />
-            <div v-if="this.$store.state.visiblePage == 'TilføjSystemer'"
+            <div v-if="this.$router.currentRoute._value.path == '/tilføj_system'"
                 class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[278px]"></div>
 
         </div>
@@ -63,6 +63,7 @@ export default {
         },
         refreshWindow() {
             location.reload()
+            //console.log(this.$router.currentRoute._value.path)
         }
 
     }

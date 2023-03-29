@@ -10,7 +10,7 @@ import TilføjProdukt from '../page/TilføjProdukt_page.vue'
 import TilføjStock from '../page/TilføjStock_page.vue'
 import TilføjSystem from '../page/TilføjSystem_page.vue'
 
-import UpdateProdukt from '../page/UpdateSystem_page.vue'
+import UpdateProdukt from '../page/UpdateProdukt_page.vue'
 import UpdateStock from '../page/UpdateStock_page.vue'
 import UpdateSystem from '../page/UpdateSystem_page.vue'
 
@@ -57,7 +57,7 @@ const routes = [
           }
     },
     {
-        path: '/tilføj_systemer',
+        path: '/tilføj_system',
         component: TilføjSystem,
         meta: {
             requiresAuth: true

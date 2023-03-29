@@ -237,7 +237,7 @@ export default {
     methods: {
         async editFromDB(e, index) {
             this.$store.state.TempIndex = index
-            this.$store.state.visiblePage = "UpdateSystemer"
+            this.$router.push('/update_system')
         },
 
         async deleteFromDB(e, index) {

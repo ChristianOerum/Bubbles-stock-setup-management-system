@@ -75,7 +75,7 @@
                             </button>
 
 
-                            <button @click="goToTilføjSystemPage"
+                            <button @click="$router.push('/tilføj_system')"
                                 class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
                                 opsætning</button>
                         </div>

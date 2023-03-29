@@ -54,7 +54,7 @@ export default {
   methods: {
     async editFromDB(e, index) {
       this.$store.state.TempIndex = index;
-      this.$store.state.visiblePage = "UpdateProdukt";
+      this.$router.push('/update_produkt')
     },
 
     async deleteFromDB(e, index) {
