@@ -41,7 +41,9 @@ import { deleteDoc, doc, getDocs, collection, query, orderBy } from "firebase/fi
 import { db } from '@/firebase'
 
 export default {
-    data() { },
+    data() {
+        return {}
+    },
     components: {},
     methods: {
         async deleteStock(e, index) {

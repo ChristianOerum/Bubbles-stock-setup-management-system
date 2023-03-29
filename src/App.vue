@@ -1,5 +1,14 @@
 <template>
-  <RouterView/>
+
+  <RouterView v-slot="{ Component }">
+    <Transition enter-from-class="opacity-0" enter-active-class="transition duration-500">
+      <component :is="Component"/>
+    </Transition>
+
+    <Nav_menu :name="this.$router.currentRoute._value.path" class="absolute top-0 left-0"></Nav_menu>
+
+  </RouterView>
+
 </template>
 
 <script>
@@ -11,9 +20,13 @@ import { defineComponent } from "vue";
 //import mixins
 import queryFirestore from "../src/mixins/queryFirestore";
 
+//comps
+import Nav_menu from '../src/components/nav_menu.vue'
+
 export default defineComponent({
   name: "App",
   components: {
+    Nav_menu
   },
   data() {
     return {

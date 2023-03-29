@@ -1,18 +1,20 @@
 <template>
-    <Nav_menu></Nav_menu>
-    <h1>gegege</h1>
+    <div class="bg-white b-0 l-0 w-screen h-screen relative">
+
+        <div class="bg-[#F1F7FF] bottom-0 right-0 left-[130px] top-[100px] h-auto w-auto absolute rounded-tl-[30px] p-[70px] ">
+            
+        </div>
+    </div>
 </template>
 
 <script>
-//comp import
-import Nav_menu from "../components/nav_menu.vue";
-
 
 export default {
-    data() { },
+    data() {
+        return {}
+    },
     setup() {},
     components: {
-        Nav_menu
     },
     methods: {}
 }

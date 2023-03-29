@@ -19,7 +19,7 @@
                         <div
                             class="w-[100%] h-[100%] row-start-1 row-span-1 items-center text-[19px] font-semibold flex flex-row relative">
                             <h1 class="relative left-[15px] text-[#00214B]">Lager</h1>
-                            <button @click="$router.push('/tilføj_produkt')"
+                            <button @click="$router.push('/tilfoej_produkt')"
                                 class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
                                 produkter</button>
                         </div>
@@ -48,7 +48,7 @@
                         <div
                             class="w-[100%] h-[100%] row-start-1 row-span-1 grid items-center text-[19px] font-semibold relative">
                             <h1 class="relative left-[15px] text-[#00214B]">In/Out oversigt</h1>
-                            <button @click="$router.push('/tilføj_stock')"
+                            <button @click="$router.push('/tilfoej_stock')"
                                 class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
                                 lager</button>
                         </div>
@@ -77,8 +77,6 @@
 
         </div>
 
-        <Nav_menu class="absolute"></Nav_menu>
-
     </div>
 </template>
 
@@ -91,18 +89,18 @@ import { db } from '@/firebase'
 //comp import
 import Lager_tabs from "../components/lager_tabs.vue";
 import Stock_tabs from "../components/stock_tabs.vue";
-import Nav_menu from "../components/nav_menu.vue";
 
 
 export default {
-    data() { },
+    data() {
+        return {}
+    },
     setup() {
 
     },
     components: {
         Lager_tabs,
-        Stock_tabs,
-        Nav_menu
+        Stock_tabs
     },
     methods: {
         async createTest() {

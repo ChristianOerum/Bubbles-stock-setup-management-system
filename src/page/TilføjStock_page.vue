@@ -1,8 +1,6 @@
 <template>
     <div @click.self="goToLagerPage" class="bg-white w-screen h-screen flex flex-col justify-center items-center relative">
 
-        <Nav_menu class="absolute left-0 top-0"></Nav_menu>
-
         <div class="bg-[#F1F7FF] w-auto h-auto rounded-xl flex flex-col justify-center p-5 items-right relative">
 
             <h1 class="font-semibold text-[24px] text-[#00214B] mb-2">Tilføj nye varer</h1>
@@ -41,8 +39,6 @@
 import { collection, addDoc } from "firebase/firestore";
 import { db } from '@/firebase'
 
-//comps
-import Nav_menu from "../components/nav_menu.vue";
 
 //mixins
 import queryFirestore from "../mixins/queryFirestore";
@@ -60,7 +56,6 @@ export default {
         }
     },
     components: {
-        Nav_menu
     },
     methods: {
         goToLagerPage() {
@@ -102,6 +97,11 @@ export default {
 
         }
     },
-    mixins: [queryFirestore]
+    mixins: [queryFirestore],
+    mounted(){
+        this.$store.state.lager.forEach((item) => {
+            this.DropdownOptions.push({lable: item.Produktnavn, value: item.id})
+        })
+    }
 }
 </script>

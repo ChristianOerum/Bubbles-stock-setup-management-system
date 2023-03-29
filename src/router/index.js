@@ -43,21 +43,21 @@ const routes = [
 
 
     {
-        path: '/tilføj_produkt',
+        path: '/tilfoej_produkt',
         component: TilføjProdukt,
         meta: {
             requiresAuth: true
           }
     },
     {
-        path: '/tilføj_stock',
+        path: '/tilfoej_stock',
         component: TilføjStock,
         meta: {
             requiresAuth: true
           }
     },
     {
-        path: '/tilføj_system',
+        path: '/tilfoej_system',
         component: TilføjSystem,
         meta: {
             requiresAuth: true

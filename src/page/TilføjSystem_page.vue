@@ -1,6 +1,5 @@
 <template>
     <div @click.self="goToSystemPage" class="bg-white w-screen h-screen flex flex-col justify-center items-center relative">
-        <Nav_menu class="absolute left-0 top-0"></Nav_menu>
 
         <div class="bg-[#F1F7FF] w-auto h-auto rounded-xl flex flex-col justify-center p-5 items-right relative">
             <h1 class="font-semibold text-[24px] text-[#00214B] mb-2">
@@ -55,9 +54,6 @@
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 
-//comps
-import Nav_menu from "../components/nav_menu.vue";
-
 //mixins
 import queryFirestore from "../mixins/queryFirestore";
 
@@ -76,7 +72,6 @@ export default {
         };
     },
     components: {
-        Nav_menu,
     },
     methods: {
         goToSystemPage() {
@@ -128,7 +123,6 @@ export default {
         for (const item of this.$store.state.lager) {
             this.BrugteProdukter.push({ navn: item.Produktnavn, id: item.id, qt: 0 });
         }
-        console.log(this.BrugteProdukter);
     },
 };
 </script>

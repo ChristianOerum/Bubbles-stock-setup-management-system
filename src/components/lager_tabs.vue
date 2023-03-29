@@ -49,7 +49,9 @@ import {
 import { db } from "@/firebase";
 
 export default {
-  data() { },
+  data() {
+    return {}
+  },
   components: {},
   methods: {
     async editFromDB(e, index) {

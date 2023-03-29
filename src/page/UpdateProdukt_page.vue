@@ -16,9 +16,11 @@
 </template>
 
 <script>
+//firebase
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase";
 
+//mixins
 import queryFirestore from "../mixins/queryFirestore";
 
 export default {
@@ -28,7 +30,8 @@ export default {
                 this.$store.state.lager[this.$store.state.TempIndex].Produktnavn,
         };
     },
-    components: {},
+    components: {
+    },
     methods: {
         goToLagerPage() {
             this.$store.state.visiblePage = "Lager";
@@ -56,7 +59,8 @@ export default {
                 );
 
                 this.queryFirestore();
-                this.goToLagerPage();
+                this.$router.push('/lager')
+
             } catch (error) {
                 console.error(
                     "ERROR updating " +

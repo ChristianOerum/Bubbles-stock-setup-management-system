@@ -52,7 +52,8 @@ export default {
                 this.$store.state.lagerUdInd[this.$store.state.TempIndex].beskrivelse,
         };
     },
-    components: {},
+    components: {
+    },
     methods: {
         goToLagerPage() {
             this.$store.state.visiblePage = "Lager";
@@ -89,7 +90,8 @@ export default {
                 );
 
                 this.queryFirestore();
-                this.goToLagerPage();
+                this.$router.push('/lager')
+
             } catch (error) {
                 console.error(
                     "ERROR updating " +

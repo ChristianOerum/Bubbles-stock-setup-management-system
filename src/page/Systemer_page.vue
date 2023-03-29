@@ -75,7 +75,7 @@
                             </button>
 
 
-                            <button @click="$router.push('/tilføj_system')"
+                            <button @click="$router.push('/tilfoej_system')"
                                 class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
                                 opsætning</button>
                         </div>
@@ -129,8 +129,6 @@
 
         </div>
 
-        <Nav_menu class="absolute"></Nav_menu>
-
     </div>
 </template>
 
@@ -138,7 +136,6 @@
 <script>
 
 //comp import
-import Nav_menu from "../components/nav_menu.vue";
 import Systemer_tabs from "../components/systemer_tabs.vue";
 import LagerStatus_tabs from "../components/lagerStatus_tabs.vue"
 
@@ -154,7 +151,6 @@ export default {
 
     },
     components: {
-        Nav_menu,
         Systemer_tabs,
         LagerStatus_tabs
     },

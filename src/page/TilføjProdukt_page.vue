@@ -12,16 +12,12 @@
         </div>
 
     </div>
-    <Nav_menu></Nav_menu>
 </template>
 
 <script>
 //firebase
 import { collection, addDoc } from "firebase/firestore";
 import { db } from '@/firebase'
-
-//comps
-import Nav_menu from '../components/nav_menu.vue'
 
 //mixins
 import queryFirestore from "../mixins/queryFirestore";
@@ -33,7 +29,6 @@ export default {
         }
     },
     components: {
-        Nav_menu
     },
     methods: {
         goToLagerPage() {
