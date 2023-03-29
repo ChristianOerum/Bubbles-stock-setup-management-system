@@ -102,6 +102,7 @@ export default {
 
       //lager array med tilførte system qt korrektion
       console.log(this.$store.state.lager);
+      console.log(localStorage.getItem("Password"))
     },
   },
 };

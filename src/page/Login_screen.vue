@@ -55,11 +55,9 @@ export default {
         updateData(event) {
             localStorage.setItem('Password', event.target.value);
             this.$emit('update:modelValue', localStorage.getItem('Password'))
+            this.$router.push('/lager');
         },
         ShowPasswordToggle() {
-
-            console.log(process.env.VUE_APP_ACCESS_PIN)
-
             if (this.show == false) {
                 this.show = true
             }

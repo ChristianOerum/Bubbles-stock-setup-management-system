@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { createApp } from 'vue'
+import router from './router'
 
 //main state store
 const store = createStore({
@@ -30,5 +31,6 @@ library.add(fas)
 
 createApp(App)
 .use(store)
+.use(router)
 .component("fa", FontAwesomeIcon)
 .mount('#app')
