@@ -2,7 +2,7 @@
     <div class="h-[100vh] w-[130px]">
         <SVGcreater style="cursor: pointer" @click="$router.push('/')" name="logo" class="h-auto w-[200px] left-[30px] top-[20px] absolute"></SVGcreater>
 
-        <div class="w-[130px] h-auto absolute top-[100px] flex flex-col justify-center items-center">
+        <div v-auto-animate class="w-[130px] h-auto absolute top-[100px] flex flex-col justify-center items-center">
 
             <fa style="cursor: pointer" @click="$router.push('/')" icon="house" class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2" />
             <div v-if="name == '/'"

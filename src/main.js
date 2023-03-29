@@ -23,6 +23,7 @@ const store = createStore({
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 
 import App from './App.vue'
 import './assets/tailwind.css'
@@ -32,5 +33,6 @@ library.add(fas)
 createApp(App)
 .use(store)
 .use(router)
+.use(autoAnimatePlugin)
 .component("fa", FontAwesomeIcon)
 .mount('#app')

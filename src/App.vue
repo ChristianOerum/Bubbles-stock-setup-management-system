@@ -38,7 +38,7 @@ export default defineComponent({
   methods: {},
   mixins: [queryFirestore],
   async mounted() {
-    this.queryFirestore();
+    this.queryFirestore(); 
   },
 });
 </script>
