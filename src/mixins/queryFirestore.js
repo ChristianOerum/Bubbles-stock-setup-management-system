@@ -80,12 +80,18 @@ export default {
         console.error("ERROR reading data from: stock " + error);
       }
 
+      //lager array med tilførte system qt korrektion
+      // console.log(this.$store.state);
+
       this.$store.state.systemer.forEach((parentItem) => {
         parentItem.Brugte_produkter.forEach((childItem) => {
+
+          try {
+
           let index = this.$store.state.lager.indexOf(
             this.$store.state.lager.find((item) => item.id === childItem.id)
           );
-
+          
           this.$store.state.lager[index].Qt_behov_til_systemer += childItem.qt;
 
           if (
@@ -97,12 +103,16 @@ export default {
               parentItem.Brugsdato.seconds * 1000
             );
           }
-        });
-      });
 
-      //lager array med tilførte system qt korrektion
-      console.log(this.$store.state.lager);
-      console.log(localStorage.getItem("Password"))
+          } catch (error) {
+            console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget")
+          }
+
+
+        });
+
+
+      });
     },
   },
 };

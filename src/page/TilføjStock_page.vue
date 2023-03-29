@@ -38,7 +38,7 @@
 
 <script>
 //firebase
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { db } from '@/firebase'
 
 //comps
@@ -93,7 +93,7 @@ export default {
                 });
 
                 this.queryFirestore()
-                this.goToLagerPage()
+                this.$router.push('/lager')
 
                 console.log("Added document to: stock");
             } catch (error) {
@@ -102,22 +102,6 @@ export default {
 
         }
     },
-    mixins: [queryFirestore],
-
-    async mounted() {
-        try {
-            const docRef1 = await getDocs(collection(db, "produkter"));
-            this.$store.state.lager = []
-
-            docRef1.forEach((doc) => {
-                this.DropdownOptions.push({ lable: doc.data().Produktnavn, value: doc.id })
-            });
-
-            console.log("read data from: produkter");
-        } catch (error) {
-            console.error("ERROR reading data from: produkter " + error);
-
-        }
-    }
+    mixins: [queryFirestore]
 }
 </script>

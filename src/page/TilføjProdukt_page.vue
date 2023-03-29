@@ -47,7 +47,7 @@ export default {
                 });
 
                 this.refreshSystmer()
-                this.goToLagerPage()
+                this.$router.push('/lager')
 
                 console.log("Added document to: produkter");
             } catch (error) {

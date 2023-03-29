@@ -114,7 +114,7 @@ export default {
                 });
 
                 this.queryFirestore();
-                this.goToSystemPage();
+                this.$router.push('/systemer')
 
                 console.log("Added document to: stock");
             } catch (error) {
