@@ -4,7 +4,7 @@
     <Transition enter-from-class="opacity-0" enter-active-class="transition duration-500">
       <component :is="Component"/>
     </Transition>
-
+    
     <Nav_menu :name="this.$router.currentRoute._value.path" class="absolute top-0 left-0"></Nav_menu>
 
   </RouterView>
