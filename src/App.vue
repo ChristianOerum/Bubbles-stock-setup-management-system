@@ -5,7 +5,7 @@
       <component :is="Component"/>
     </Transition>
     
-    <Nav_menu :name="this.$router.currentRoute._value.path" class="absolute top-0 left-0"></Nav_menu>
+    <Nav_menu v-if="this.$router.currentRoute._value.path != '/login'" :name="this.$router.currentRoute._value.path" class="absolute top-0 left-0"></Nav_menu>
 
   </RouterView>
 
