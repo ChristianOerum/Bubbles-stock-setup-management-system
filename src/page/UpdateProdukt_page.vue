@@ -33,10 +33,6 @@ export default {
     components: {
     },
     methods: {
-        goToLagerPage() {
-            this.$store.state.visiblePage = "Lager";
-            this.$store.state.TempIndex = null;
-        },
 
         async updateProdukt() {
             try {
@@ -59,7 +55,9 @@ export default {
                 );
 
                 this.queryFirestore();
+                this.$store.state.TempIndex = null;
                 this.$router.push('/lager')
+
 
             } catch (error) {
                 console.error(

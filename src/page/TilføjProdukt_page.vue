@@ -41,7 +41,7 @@ export default {
                     Produktnavn: this.fieldValue
                 });
 
-                this.refreshSystmer()
+                this.queryFirestore()
                 this.$router.push('/lager')
 
                 console.log("Added document to: produkter");

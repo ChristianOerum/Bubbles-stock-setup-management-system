@@ -1,7 +1,7 @@
 <template>
     <div @click.self="goToSystemPage" class="bg-white w-screen h-screen flex flex-col justify-center items-center relative">
 
-        <div class="bg-[#F1F7FF] w-auto h-auto rounded-xl flex flex-col justify-center p-5 items-right relative">
+        <div v-auto-animate class="bg-[#F1F7FF] w-auto h-auto rounded-xl flex flex-col justify-center p-5 items-right relative">
             <h1 class="font-semibold text-[24px] text-[#00214B] mb-2">
                 Tilføj nyt system
             </h1>
@@ -9,6 +9,23 @@
             <input type="text" placeholder="System navn"
                 class="mt-2 indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold"
                 v-model="SystemNavn" />
+
+
+            <button @click.self="toggleDropdownEmployee"
+                class="h-[50px] w-[400px] text-[#00214B] text-left mt-2 indent-[15px] bg-white font-semibold rounded-lg">
+                {{
+                    SelectedOptionEmployee.navn == null ? "Ansat" : SelectedOptionEmployee.navn
+                }}
+            </button>
+            <div v-if="this.dropdownOpenEmployee"
+                class="w-[400px] max-h-[200px] h-auto bg-white mt-2 rounded-lg flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                <button v-on:click="dropdownSelectEmployee($event, index)" v-for="(item, index) in this.DropdownOptionsEmployee"
+                    v-bind:key="index"
+                    class="h-[40px] w-[400px] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
+                    {{ item.navn }}
+                </button>
+            </div>
+
 
             <button @click.self="toggleDropdown"
                 class="h-[50px] w-[400px] text-[#00214B] text-left mt-2 indent-[15px] bg-white font-semibold rounded-lg">
@@ -62,11 +79,14 @@ export default {
         return {
             dateValue: null,
             dropdownOpen: false,
+            dropdownOpenEmployee: false,
             DropdownOptions: [
                 { lable: "Opsat", value: true },
                 { lable: "Ikke opsat", value: false },
             ],
+            DropdownOptionsEmployee: [],
             SelectedOption: [],
+            SelectedOptionEmployee: [],
             SystemNavn: "",
             BrugteProdukter: [],
         };
@@ -82,9 +102,18 @@ export default {
             this.dropdownOpen = !this.dropdownOpen;
         },
 
+        toggleDropdownEmployee() {
+            this.dropdownOpenEmployee = !this.dropdownOpenEmployee;
+        },
+
         dropdownSelect(ev, i) {
             this.SelectedOption = this.DropdownOptions[i];
             this.dropdownOpen = !this.dropdownOpen;
+        },
+
+        dropdownSelectEmployee(ev, i) {
+            this.SelectedOptionEmployee = this.DropdownOptionsEmployee[i];
+            this.dropdownOpenEmployee = !this.dropdownOpenEmployee;
         },
 
         nameKeydown(e) {
@@ -106,6 +135,7 @@ export default {
                     Brugte_produkter: this.BrugteProdukter,
                     Opsatstatus: this.SelectedOption.value,
                     Systemnavn: this.SystemNavn,
+                    Tilknyttet: this.SelectedOptionEmployee.id
                 });
 
                 this.queryFirestore();
@@ -122,6 +152,10 @@ export default {
     async mounted() {
         for (const item of this.$store.state.lager) {
             this.BrugteProdukter.push({ navn: item.Produktnavn, id: item.id, qt: 0 });
+        }
+
+        for (const item of this.$store.state.medarbejdere) {
+            this.DropdownOptionsEmployee.push(item);
         }
     },
 };

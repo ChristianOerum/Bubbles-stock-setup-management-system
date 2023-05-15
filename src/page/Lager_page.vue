@@ -48,7 +48,7 @@
                         <div
                             class="w-[100%] h-[100%] row-start-1 row-span-1 grid items-center text-[19px] font-semibold relative">
                             <h1 class="relative left-[15px] text-[#00214B]">In/Out oversigt</h1>
-                            <button @click="$router.push('/tilfoej_stock')"
+                            <button @click="$router.push('/Bubbles-stock-setup-management-system/tilfoej_stock')"
                                 class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
                                 lager</button>
                         </div>

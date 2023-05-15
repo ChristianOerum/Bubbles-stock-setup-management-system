@@ -51,7 +51,7 @@
                     <div class="w-[100%] min-h-0 bg-white col-start-1 col-span-1 rounded-2xl grid overflow-hidden"
                         style="grid-template-rows: 60px 60px 15fr">
 
-                        <div
+                        <div v-auto-animate
                             class="w-[100%] h-[100%] row-start-1 row-span-1 items-center text-[19px] font-semibold flex flex-row relative">
                             <h1 class="relative left-[15px] text-[#00214B]">Systemer til opsæting</h1>
 
@@ -81,10 +81,11 @@
                         </div>
 
                         <div class="w-[100%] h-[100%] bg-[#EAEEF3] row-start-2 row-span-1 grid items-center p-[18px] text-[14px] font-semibold text-[#9AA8BA]"
-                            style="grid-template-columns: 3fr 1.5fr 1fr 40px">
+                            style="grid-template-columns: 2.5fr 1fr 1fr 1fr 40px">
                             <h1 class="col-start-1 col-span-1">Opsætingsnavn</h1>
                             <h1 class="col-start-2 col-span-1">Status</h1>
-                            <h1 class="col-start-3 col-span-1">Due Dato</h1>
+                            <h1 class="col-start-3 col-span-1">Tilknyttet</h1>
+                            <h1 class="col-start-4 col-span-1">Due Dato</h1>
 
                         </div>
 

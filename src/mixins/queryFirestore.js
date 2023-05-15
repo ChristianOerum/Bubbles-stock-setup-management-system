@@ -23,6 +23,7 @@ export default {
             Brugsdato: doc.data().Brugsdato,
             Brugte_produkter: doc.data().Brugte_produkter,
             id: doc.id,
+            tilknyttet: doc.data().Tilknyttet
           });
         });
 
@@ -50,6 +51,25 @@ export default {
       } catch (error) {
         console.error("ERROR reading data from: produkter " + error);
       }
+
+
+      try {
+        const docRef4 = await getDocs(collection(db, "medarbejdere"));
+        this.$store.state.medarbejdere = [];
+
+        docRef4.forEach((doc) => {
+          this.$store.state.medarbejdere.push({
+            navn: doc.data().Navn,
+            adresse: doc.data().Adresse,
+            id: doc.id
+          });
+        });
+
+        console.log("read data from: medarbejdere");
+      } catch (error) {
+        console.error("ERROR reading data from: medarbejdere " + error);
+      }
+
 
       try {
         const docRef2 = await getDocs(
@@ -105,7 +125,7 @@ export default {
           }
 
           } catch (error) {
-            console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget")
+            console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + childItem.id)
           }
 
 

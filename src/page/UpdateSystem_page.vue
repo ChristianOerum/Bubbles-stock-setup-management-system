@@ -10,6 +10,23 @@
                 class="mt-2 indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold"
                 v-model="SystemNavn" />
 
+
+            <button @click.self="toggleDropdownEmployee"
+                class="h-[50px] w-[400px] text-[#00214B] text-left mt-2 indent-[15px] bg-white font-semibold rounded-lg">
+                {{
+                    SelectedOptionEmployee.navn == null ? "Ansat" : SelectedOptionEmployee.navn
+                }}
+            </button>
+            <div v-if="this.dropdownOpenEmployee"
+                class="w-[400px] max-h-[200px] h-auto bg-white mt-2 rounded-lg flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                <button v-on:click="dropdownSelectEmployee($event, index)" v-for="(item, index) in this.DropdownOptionsEmployee"
+                    v-bind:key="index"
+                    class="h-[40px] w-[400px] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
+                    {{ item.navn }}
+                </button>
+            </div>
+
+
             <button @click.self="toggleDropdown"
                 class="h-[50px] w-[400px] text-[#00214B] text-left mt-2 indent-[15px] bg-white font-semibold rounded-lg">
                 {{
@@ -64,10 +81,13 @@ export default {
         return {
             dateValue: null,
             dropdownOpen: false,
+            dropdownOpenEmployee: false,
             DropdownOptions: [
                 { lable: "Opsat", value: true },
                 { lable: "Ikke opsat", value: false },
             ],
+            SelectedOptionEmployee: [],
+            DropdownOptionsEmployee: [],
             SelectedOption: [],
             SystemNavn: "",
             BrugteProdukter: [],
@@ -83,6 +103,15 @@ export default {
 
         toggleDropdown() {
             this.dropdownOpen = !this.dropdownOpen;
+        },
+
+        toggleDropdownEmployee() {
+            this.dropdownOpenEmployee = !this.dropdownOpenEmployee;
+        },
+
+        dropdownSelectEmployee(ev, i) {
+            this.SelectedOptionEmployee = this.DropdownOptionsEmployee[i];
+            this.dropdownOpenEmployee = !this.dropdownOpenEmployee;
         },
 
         dropdownSelect(ev, i) {
@@ -102,6 +131,7 @@ export default {
                     Brugte_produkter: this.BrugteProdukter,
                     Opsatstatus: this.SelectedOption.value,
                     Systemnavn: this.SystemNavn,
+                    Tilknyttet: this.SelectedOptionEmployee.id,
                 });
 
                 console.log(
@@ -132,20 +162,36 @@ export default {
     mixins: [queryFirestore],
 
     async mounted() {
+
+        for (const item of this.$store.state.medarbejdere) {
+            this.DropdownOptionsEmployee.push(item);
+        }
+
         console.log(this.$store.state.systemer[this.$store.state.TempIndex]);
 
         console.log(
             this.$store.state.systemer[this.$store.state.TempIndex].Brugsdato
         );
 
+
+
+        try {
+            let arraySearchEmployee = (element) => element.id == this.$store.state.systemer[this.$store.state.TempIndex].tilknyttet
+
+            let index = this.$store.state.medarbejdere.findIndex(arraySearchEmployee)
+
+            this.SelectedOptionEmployee = this.$store.state.medarbejdere[index]
+
+            console.log(this.$store.state.medarbejdere[index])
+
+            } catch (error) {
+                    console.error("Id ej fundet, medarbejderen er tidligere blevet slettet fra databasen ", error);
+        }
+
+
+
         (this.dateValue = new Date(
-            this.$store.state.systemer[this.$store.state.TempIndex].Brugsdato
-                .seconds * 1000
-        )
-            .toISOString()
-            .substr(0, 10)),
-            (this.SystemNavn =
-                this.$store.state.systemer[this.$store.state.TempIndex].Systemnavn);
+            this.$store.state.systemer[this.$store.state.TempIndex].Brugsdato.seconds * 1000).toISOString().substr(0, 10)),(this.SystemNavn = this.$store.state.systemer[this.$store.state.TempIndex].Systemnavn);
 
         if (
             this.$store.state.systemer[this.$store.state.TempIndex].Opsatstatus ==
@@ -156,8 +202,26 @@ export default {
             this.SelectedOption = { lable: "Opsat", value: true };
         }
 
-        this.BrugteProdukter =
-            this.$store.state.systemer[this.$store.state.TempIndex].Brugte_produkter;
+        for (const item of this.$store.state.lager) {
+            this.BrugteProdukter.push({ navn: item.Produktnavn, id: item.id, qt: 0 });
+        }
+        
+
+        for (const item of (this.$store.state.systemer[this.$store.state.TempIndex].Brugte_produkter)) {
+
+            try {
+            let arraySearch = (element) => element.id == item.id
+
+            let index = this.BrugteProdukter.findIndex(arraySearch)
+
+            this.BrugteProdukter[index].qt += item.qt
+
+            } catch (error) {
+                    console.error("Id ej fundet, produktet er tidligere blevet slettet fra produkt katalog ", error);
+            }
+
+
+        }
     },
 };
 </script>
