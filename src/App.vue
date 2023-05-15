@@ -1,11 +1,11 @@
 <template>
 
-  <RouterView v-slot="{ Component }">
+  <RouterView :key="$route.fullPath" v-slot="{ Component }">
     <Transition enter-from-class="opacity-0" enter-active-class="transition duration-500">
       <component :is="Component"/>
     </Transition>
     
-    <Nav_menu v-if="this.$router.currentRoute._value.path != '/login'" :name="this.$router.currentRoute._value.path" class="absolute top-0 left-0"></Nav_menu>
+    <Nav_menu :name="this.$router.currentRoute._value.path" class="absolute top-0 left-0"></Nav_menu>
 
   </RouterView>
 
@@ -38,7 +38,9 @@ export default defineComponent({
   methods: {},
   mixins: [queryFirestore],
   async mounted() {
-    this.queryFirestore(); 
+    this.queryFirestore();
+    
+    console.log(this.$router.currentRoute._value.path)
   },
 });
 </script>
