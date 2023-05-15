@@ -50,7 +50,7 @@ const routes = [
           }
     },
     {
-        path: '/tilfoej_stock',
+        path: '/tilfoej_stock', 
         component: TilføjStock,
         meta: {
             requiresAuth: true
