@@ -56,9 +56,11 @@ export default {
 
         async deleteFromDB(e, index) {
             try {
-                await deleteDoc(doc(db, "demo-systemer", this.$store.state.systemer[index].id));
+                await deleteDoc(doc(db, "demo-systemer", this.$store.state.demoSystemer[index].id));
 
-                console.log("deleted " + this.$store.state.systemer[index].id + "(" + this.$store.state.systemer[index].Produktnavn + ")" + " from: demo-systemer");
+                console.log(this.$store.state.demoSystemer)
+
+                console.log("deleted " + this.$store.state.demoSystemer[index].id + "(" + this.$store.state.demoSystemer[index].Systemnavn + ")" + " from: demo-systemer");
 
                 this.queryFirestore()
 
