@@ -27,6 +27,7 @@
 
             <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
         </div>
+        
 
     </div>
 </template>

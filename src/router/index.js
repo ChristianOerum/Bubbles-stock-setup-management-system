@@ -14,6 +14,10 @@ import UpdateProdukt from '../page/UpdateProdukt_page.vue'
 import UpdateStock from '../page/UpdateStock_page.vue'
 import UpdateSystem from '../page/UpdateSystem_page.vue'
 
+import DemoSystem from '../page/Demo_page.vue'
+import TilføjDemoSystem from '../page/tilføjDemoSystem_page'
+import UpdateDemoSystem from '../page/UpdateDemoSystem_page.vue'
+
 const routes = [
     {
         path: '/',
@@ -85,6 +89,27 @@ const routes = [
         meta: {
             requiresAuth: true
           }
+    },
+    {
+      path: '/demo_systemer',
+      component: DemoSystem,
+      meta: {
+          requiresAuth: true
+        }
+    },
+    {
+      path: '/tilfoej_demo_system',
+      component: TilføjDemoSystem,
+      meta: {
+          requiresAuth: true
+        }
+    },
+    {
+      path: '/update_demo_system',
+      component: UpdateDemoSystem,
+      meta: {
+          requiresAuth: true
+        }
     },
     
 ]

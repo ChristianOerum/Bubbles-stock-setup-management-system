@@ -1,7 +1,7 @@
 <template>
     <div v-if="name != '/login'" class="h-[100vh] w-[130px]">
         <SVGcreater style="cursor: pointer" @click="$router.push('/')" name="logo" class="h-auto w-[200px] left-[30px] top-[20px] absolute"></SVGcreater>
-        <p class="absolute w-max text-black text-[12px] left-[225px] top-[56px]">v1.14</p>
+        <p class="absolute w-max text-black text-[12px] left-[225px] top-[56px]">v1.15</p>
 
         <div v-auto-animate class="w-[100px] h-auto absolute top-[100px] flex flex-col justify-center items-center">
 
@@ -34,13 +34,25 @@
             <div v-if="name == '/tilfoej_system'"
                 class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[278px]"></div>
 
+            <div class="w-[40px] h-[5px] rounded-md bg-[#00214B] opacity-5 m-4"></div>
+
+            <fa style="cursor: pointer" @click="$router.push('/demo_systemer')" icon="database"
+                class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2" />
+            <div v-if="name == '/demo_systemer'"
+                class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[365px]"></div>
+
+            <fa style="cursor: pointer" @click="$router.push('/tilfoej_demo_system')" icon="square-plus"
+                class="text-[#00214B] w-full h-[34px] ml-2 text-center m-2" />
+            <div v-if="name == '/tilfoej_demo_system'"
+                class="bg-[#0097ff] w-[8px] h-[34px] absolute left-0 rounded-r-md top-[416px]"></div>
+
         </div>
 
-        <button @click="refreshWindow" class="absolute left-5 bottom-[85px] font-semibold">
+        <button @click="refreshWindow" class="opacity-40 absolute left-5 bottom-[85px] font-semibold">
             <fa style="cursor: pointer" icon="arrows-rotate" class="text-[#00214B] w-full h-[30px] ml-2 text-center m-2" />
         </button>
 
-        <button @click="clearLocalStorage" class="absolute left-5 bottom-[30px] font-semibold">
+        <button @click="clearLocalStorage" class="opacity-40 absolute left-5 bottom-[30px] font-semibold">
             <fa style="cursor: pointer" icon="right-from-bracket"
                 class="text-[#00214B] w-full h-[30px] ml-2 text-center m-2" />
         </button>

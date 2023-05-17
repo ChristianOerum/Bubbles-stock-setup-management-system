@@ -9,11 +9,10 @@
                 class="h-[50px] w-[400px] text-[#00214B] text-left indent-[15px] bg-white font-semibold rounded-lg">{{
                     SelectedOption.value == null ? "Vælg relateret produkt" : SelectedOption.lable }}</button>
             <div v-if="this.dropdownOpen"
-                class="w-[400px] max-h-[200px] h-auto bg-white rounded-lg flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                class="w-[400px] max-h-[200px] bg-[#DDECFF] h-auto rounded-lg flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden">
                 <button v-on:click="dropdownSelect($event, index)" v-for="(item, index) in this.DropdownOptions"
                     v-bind:key="index"
-                    class="h-[40px] w-[400px] bg-white text-[#00214B] font-semibold indent-[15px] text-left">{{ item.lable
-                    }}</button>
+                    class="h-[40px] w-[400px] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] mb-1 mt-1 text-left">{{ item.lable}}</button>
             </div>
 
             <input placeholder="Vælg korrektions værdi" @keydown="nameKeydown($event)"
