@@ -11,6 +11,7 @@ const store = createStore({
         lager: [],
         lagerUdInd: [],
         systemer: [],
+        combos: [],
         medarbejdere: [],
         todaysDate: "",
         visiblePage: "Lager",

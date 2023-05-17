@@ -150,8 +150,8 @@ export default {
     mixins: [queryFirestore],
 
     async mounted() {
-        for (const item of this.$store.state.lager) {
-            this.BrugteProdukter.push({ navn: item.Produktnavn, id: item.id, qt: 0 });
+        for (const item of this.$store.state.combos) {
+            this.BrugteProdukter.push({ navn: item.comboNavn, id: item.id, qt: 0 });
         }
 
         for (const item of this.$store.state.medarbejdere) {

@@ -54,6 +54,25 @@ export default {
 
 
       try {
+        const docRef5 = await getDocs(collection(db, "combos"));
+        this.$store.state.combos = [];
+
+        docRef5.forEach((doc) => {
+          this.$store.state.combos.push({
+            comboNavn: doc.data().navn,
+            comboIds: doc.data().combo,
+            id: doc.id
+          });
+        });
+
+        console.log("read data from: combos");
+        console.log(this.$store.state.combos)
+      } catch (error) {
+        console.error("ERROR reading data from: combos " + error);
+      }
+
+
+      try {
         const docRef4 = await getDocs(collection(db, "medarbejdere"));
         this.$store.state.medarbejdere = [];
 

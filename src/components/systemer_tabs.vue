@@ -218,7 +218,7 @@
 
 
         <div v-else
-            class="bg-gradient-to-r to-[#FFFFFF] from-[#BFF2FF] w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]"
+            class="bg-gradient-to-r to-[#FFFFFF] from-[#FFFFFF] w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]"
             style="grid-template-columns: 2.5fr 1fr 1fr 1fr 40px">
             <h1 class="col-start-1 col-span-1">{{ item.Systemnavn }}</h1>
 
