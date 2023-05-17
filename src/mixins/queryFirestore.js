@@ -66,7 +66,6 @@ export default {
         });
 
         console.log("read data from: combos");
-        console.log(this.$store.state.combos)
       } catch (error) {
         console.error("ERROR reading data from: combos " + error);
       }
@@ -123,34 +122,36 @@ export default {
       // console.log(this.$store.state);
 
       this.$store.state.systemer.forEach((parentItem) => {
+
         parentItem.Brugte_produkter.forEach((childItem) => {
 
-          try {
+          for (let i = 0; i < childItem.qt; i++) {
+            let index1 = this.$store.state.combos.indexOf(this.$store.state.combos.find((item) => item.id === childItem.id));
 
-          let index = this.$store.state.lager.indexOf(
-            this.$store.state.lager.find((item) => item.id === childItem.id)
-          );
-          
-          this.$store.state.lager[index].Qt_behov_til_systemer += childItem.qt;
+            this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
 
-          if (
-            this.$store.state.lager[index].ForfaldDato == null &&
-            this.$store.state.lager[index].Qt_behov_til_systemer >
-            this.$store.state.lager[index].Qt_på_lager
-          ) {
-            this.$store.state.lager[index].ForfaldDato = new Date(
-              parentItem.Brugsdato.seconds * 1000
-            );
+
+              try {
+              
+                let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
+
+                console.log(index)
+
+      
+                this.$store.state.lager[index].Qt_behov_til_systemer += 1;
+      
+                if (this.$store.state.lager[index].ForfaldDato == null && this.$store.state.lager[index].Qt_behov_til_systemer > this.$store.state.lager[index].Qt_på_lager) {
+                    this.$store.state.lager[index].ForfaldDato = new Date(parentItem.Brugsdato.seconds * 1000);
+                }
+              
+                } catch (error) {
+                  console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + subChildItem.id)
+                }
+
+
+          })
           }
-
-          } catch (error) {
-            console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + childItem.id)
-          }
-
-
         });
-
-
       });
     },
   },
