@@ -80,6 +80,9 @@ export default {
         },
 
         comboClick(ev, i) {
+            this.selectedItemIndex = null
+            this.comboItemArray = []
+
             console.log(this.$store.state.combos[i])
             this.showComboInstance = true
             this.ComboInstanceName = this.$store.state.combos[i].comboNavn
