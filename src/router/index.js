@@ -18,6 +18,8 @@ import DemoSystem from '../page/Demo_page.vue'
 import TilføjDemoSystem from '../page/tilføjDemoSystem_page'
 import UpdateDemoSystem from '../page/UpdateDemoSystem_page.vue'
 
+import ManageCombos from '../page/Combo_page.vue'
+
 const routes = [
     {
         path: '/',
@@ -107,6 +109,13 @@ const routes = [
     {
       path: '/update_demo_system',
       component: UpdateDemoSystem,
+      meta: {
+          requiresAuth: true
+        }
+    },
+    {
+      path: '/manage_combos',
+      component: ManageCombos,
       meta: {
           requiresAuth: true
         }
