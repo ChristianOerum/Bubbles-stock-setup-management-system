@@ -2,7 +2,7 @@
   <div v-for="(item, index) in this.$store.state.lager" v-bind:key="index">
     <div v-if="index % 2 == 0" class="bg-white w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]"
       style="grid-template-columns: 3fr 1fr 1fr 1fr 40px">
-      <h1 class="col-start-1 col-span-1">{{ item.Produktnavn }}</h1>
+      <h1 class="col-start-1 col-span-1">{{ item.Produktnavn }} <fa v-if="item.Threshold >= item.Qt_på_lager" style="cursor: pointer" icon="circle-exclamation" class="w-auto h-[16px] ml-1 text-[#D24848]" /></h1>
       <h1 class="col-start-2 col-span-1">
         {{ item.Qt_på_lager + item.Qt_prøveperiode }}
       </h1>
@@ -19,7 +19,7 @@
 
     <div v-else class="bg-[#F6FAFF] w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]"
       style="grid-template-columns: 3fr 1fr 1fr 1fr 40px">
-      <h1 class="col-start-1 col-span-1">{{ item.Produktnavn }}</h1>
+      <h1 class="col-start-1 col-span-1">{{ item.Produktnavn }}<fa v-if="item.Threshold >= item.Qt_på_lager" style="cursor: pointer" icon="circle-exclamation" class="w-auto h-[16px] ml-1 text-[#D24848]" /></h1>
       <h1 class="col-start-2 col-span-1">
         {{ item.Qt_på_lager + item.Qt_prøveperiode }}
       </h1>

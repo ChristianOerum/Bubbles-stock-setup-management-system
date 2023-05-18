@@ -39,6 +39,7 @@ export default {
         docRef1.forEach((doc) => {
           this.$store.state.lager.push({
             Produktnavn: doc.data().Produktnavn,
+            Threshold: doc.data().Threshold,
             Qt_på_lager: 0,
             Qt_prøveperiode: 0,
             id: doc.id,
