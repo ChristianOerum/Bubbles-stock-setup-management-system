@@ -153,20 +153,14 @@ export default {
 
             this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
 
-
-              try {
-              
-                let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
+              let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
       
                 this.$store.state.lager[index].Qt_behov_til_systemer += 1;
       
-                if (this.$store.state.lager[index].ForfaldDato == null && this.$store.state.lager[index].Qt_behov_til_systemer < this.$store.state.lager[index].Qt_på_lager) {
+                if (this.$store.state.lager[index].ForfaldDato == null && this.$store.state.lager[index].Qt_behov_til_systemer > this.$store.state.lager[index].Qt_på_lager) {
                     this.$store.state.lager[index].ForfaldDato = new Date(parentItem.Brugsdato.seconds * 1000);
                 }
-              
-                } catch (error) {
-                  console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + subChildItem.id)
-                }
+
           })
           }
         });
