@@ -122,26 +122,76 @@ export default {
         this.$store.state.lagerUdInd = [];
 
         docRef2.forEach((doc) => {
-          let temp_indexing_of_arr = this.$store.state.lager
-            .map((ref) => ref.id)
-            .indexOf(doc.data().produkt_ref_id);
+          let temp_indexing_of_arr = this.$store.state.lager.map((ref) => ref.id).indexOf(doc.data().produkt_ref_id);
           this.$store.state.lager[temp_indexing_of_arr].Qt_på_lager +=
             doc.data().update;
 
-          this.$store.state.lagerUdInd.unshift({
-            Produktnavn:
-              this.$store.state.lager[temp_indexing_of_arr].Produktnavn,
-            date: doc.data().date.seconds,
-            Update: doc.data().update,
-            id: doc.id,
-            beskrivelse: doc.data().beskrivelse,
-          });
+          this.$store.state.lagerUdInd.unshift({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.data().date.seconds, Update: doc.data().update, id: doc.id, beskrivelse: doc.data().beskrivelse, Systemgenereted: doc.data().Systemgenereted});
         });
 
         console.log("read data from: stock");
       } catch (error) {
         console.error("ERROR reading data from: stock " + error);
       }
+
+
+      //system automations medregnelse af varer ud, som følge af opsat system fra system siden.
+      let parentArr = []
+      let childArr = []
+
+      this.$store.state.systemer.forEach((system)=> {
+
+        if (system.Opsatstatus == true) {
+          if (childArr.length == 0 || new Date(system.Brugsdato.seconds*1000).toLocaleDateString() == new Date(childArr[0].Brugsdato.seconds*1000).toLocaleDateString()) {
+            childArr.unshift(system)
+          }
+
+          else {
+            parentArr.push(childArr)
+            childArr = []
+
+            childArr.unshift(system)
+          }
+          
+        }
+      })
+      parentArr.push(childArr)
+      childArr = []
+      
+      parentArr.forEach((group)=> {
+        group.forEach((parentItem)=>{
+
+          let tempArr = []
+
+          this.$store.state.lager.forEach((lagerItems) => {
+            tempArr.push({id: lagerItems.id, qt: 0, navn: lagerItems.Produktnavn })
+          })
+
+          //console.log("_____")
+          parentItem.Brugte_produkter.forEach((childItem)=>{
+            
+            if (childItem.qt != 0) {
+              let index1 = this.$store.state.combos.indexOf(this.$store.state.combos.find((item) => item.id === childItem.id));
+              this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
+
+                let tempIndex = tempArr.indexOf(tempArr.find((item) => item.id === subChildItem));
+                tempArr[tempIndex].qt += 1
+                //console.log(tempArr)
+              })
+            }
+          })
+
+          tempArr.forEach((item)=>{
+            if (item.qt != 0) {
+              let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((element) => element.id === item.id));
+              this.$store.state.lager[index].Qt_på_lager -= item.qt
+
+              this.$store.state.lagerUdInd.unshift({Produktnavn: item.navn, date: group[0].Brugsdato.seconds, Update: -item.qt, beskrivelse: "Korrektion som følge af opsætningen af: " + item.navn, Systemgenereted: true });
+            }
+          })
+        })
+      })
+
 
       //lager array med tilførte system qt korrektion
       this.$store.state.systemer.forEach((parentItem) => {
@@ -153,12 +203,18 @@ export default {
 
             this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
 
-              let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
+              try {
+              
+                let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
       
                 this.$store.state.lager[index].Qt_behov_til_systemer += 1;
       
                 if (this.$store.state.lager[index].ForfaldDato == null && this.$store.state.lager[index].Qt_behov_til_systemer > this.$store.state.lager[index].Qt_på_lager) {
                     this.$store.state.lager[index].ForfaldDato = new Date(parentItem.Brugsdato.seconds * 1000);
+                }
+      
+                } catch (error) {
+                  console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + subChildItem.id)
                 }
 
           })

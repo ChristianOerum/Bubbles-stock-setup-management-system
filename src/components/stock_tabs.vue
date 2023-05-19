@@ -9,9 +9,9 @@
             <h1 class="col-start-3 col-span-1 opacity-50">{{ (new Date(item.date * 1000)).toLocaleDateString() }}</h1>
 
             <div class="col-start-4 col-span-1 opacity-50">
-                <fa style="cursor: pointer" @click="editStock($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteStock($event, index)" icon="trash-can"
-                    class="w-auto h-[16px] ml-2" />
+                <fa v-if="item.Systemgenereted == false" style="cursor: pointer" @click="editStock($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
+                <fa v-if="item.Systemgenereted == false" style="cursor: pointer" @click="deleteStock($event, index)" icon="trash-can" class="w-auto h-[16px] ml-2" />
+                <fa v-if="item.Systemgenereted != false" @click="deleteStock($event, index)" icon="lock" class="w-auto h-[16px] ml-3" />
             </div>
 
             <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
@@ -25,9 +25,9 @@
             <h1 class="col-start-3 col-span-1 opacity-50">{{ (new Date(item.date * 1000)).toLocaleDateString() }}</h1>
 
             <div class="col-start-4 col-span-1 opacity-50">
-                <fa style="cursor: pointer" @click="editStock($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteStock($event, index)" icon="trash-can"
-                    class="w-auto h-[16px] ml-2" />
+                <fa v-if="item.Systemgenereted == false" style="cursor: pointer" @click="editStock($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
+                <fa v-if="item.Systemgenereted == false" style="cursor: pointer" @click="deleteStock($event, index)" icon="trash-can" class="w-auto h-[16px] ml-2" />
+                <fa v-if="item.Systemgenereted != false" @click="deleteStock($event, index)" icon="lock" class="w-auto h-[16px] ml-3" />
             </div>
 
             <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>

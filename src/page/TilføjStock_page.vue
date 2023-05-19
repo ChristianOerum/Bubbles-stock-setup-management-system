@@ -50,7 +50,8 @@ export default {
             dropdownOpen: false,
             DropdownOptions: [],
             SelectedOption: [],
-            Beskrivelse: ""
+            Beskrivelse: "",
+            Systemgenereted: false
 
         }
     },
