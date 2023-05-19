@@ -4,17 +4,23 @@
 
             <h1 class="font-semibold text-[24px] text-[#00214B] mb-2">Ændr combo (vælg)</h1>
 
-            <button v-on:click="comboClick($event, index)" v-for="(item, index) in this.$store.state.combos" v-bind:key="index" class="h-[40px] w-[400px] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
-                    {{ item.comboNavn }}
-            </button>
+            <button @click="$router.push('/tilfoej_combo')" class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-5 top-4 absolute">Tilføj ny</button>
 
-            <div v-if="this.showComboInstance == true">
+            <div class="overflow-y-scroll w-[400px] h-[200px]">
+                <button v-on:click="comboClick($event, index)" v-for="(item, index) in this.$store.state.combos" v-bind:key="index" class="h-[40px] w-[100%] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
+                        {{ item.comboNavn }}
+                </button>
+            </div>
+
+            <div v-if="this.showComboInstance == true" class="relative">
 
                 <div class="w-100 h-[4px] bg-black mt-4 rounded-full opacity-10"></div>
 
                 <h1 class="font-semibold text-[24px] text-[#00214B] mt-4 mb-2">({{ this.ComboInstanceName }})</h1>
 
-                <input type="text" placeholder="System navn" class="indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 mb-2 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold" v-model="nytComboNavn" />
+                <fa style="cursor: pointer" @click="deleteFromDB()" icon="trash-can" class="absolute w-auto right-4 top-11 h-[16px] ml-2" />
+
+                <input type="text" placeholder="Combo navn" class="indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 mb-2 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold" v-model="nytComboNavn" />
 
                 <div v-for="(item, index) in this.comboItemArray" v-bind:key="index"
                     class="flex items-center h-[40px] relative w-[400px] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
@@ -40,7 +46,7 @@
 
 <script>
 //firebase
-import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from '@/firebase'
 
 //mixins
@@ -53,7 +59,8 @@ export default {
             ComboInstanceName: "",
             comboItemArray: [],
             nytComboNavn: "",
-            selectedItemIndex: null
+            selectedItemIndex: null,
+            tempIndex: null
         }
     },
     components: {
@@ -79,7 +86,25 @@ export default {
 
         },
 
+        async deleteFromDB() {
+            console.log(this.tempIndex)
+            try {
+                await deleteDoc(doc(db, "combos", this.$store.state.combos[this.tempIndex].id));
+
+                console.log("deleted " + this.$store.state.combos[this.tempIndex].id + " from: combos");
+
+                this.showComboInstance = false
+
+                this.queryFirestore()
+
+            } catch (error) {
+                console.error("ERROR deleting " + this.$store.state.combos[this.tempIndex].id + " from: combos " + error);
+            }
+
+        },
+
         comboClick(ev, i) {
+            this.tempIndex = i
             this.selectedItemIndex = null
             this.comboItemArray = []
 
