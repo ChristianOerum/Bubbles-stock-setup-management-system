@@ -45,6 +45,10 @@
             <input type="date" required pattern="\d{4}-\d{2}-\d{2}"
                 class="mt-2 h-[40px] w-[400px] indent-[8px] font-semibold font-[#00214B]" v-model="dateValue" />
 
+            <textarea placeholder="Beskrivelse (valgfri)"
+                class="p-3 mt-2 indent-[5px] h-[100px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold"
+                type="textarea" v-model="beskrivelse" />
+
             <p class="indent-[3px] mt-4 font-semibold">Produkter på system</p>
 
             <div class="mt-2 indent-[15px] h-auto w-[400px] rounded-lg rounded-lg overflow-hidden">
@@ -91,6 +95,7 @@ export default {
             SelectedOption: [],
             SystemNavn: "",
             BrugteProdukter: [],
+            beskrivelse: ""
         };
     },
     components: {
@@ -132,6 +137,7 @@ export default {
                     Opsatstatus: this.SelectedOption.value,
                     Systemnavn: this.SystemNavn,
                     Tilknyttet: this.SelectedOptionEmployee.id,
+                    Beskrivelse: this.beskrivelse
                 });
 
                 console.log(
@@ -162,6 +168,12 @@ export default {
     mixins: [queryFirestore],
 
     async mounted() {
+
+        try {
+            this.beskrivelse = this.$store.state.systemer[this.$store.state.TempIndex].beskrivelse
+        } catch (error) {
+                console.error("beskrivelse ikke fundet: ", error);
+        }
 
         for (const item of this.$store.state.medarbejdere) {
             this.DropdownOptionsEmployee.push(item);

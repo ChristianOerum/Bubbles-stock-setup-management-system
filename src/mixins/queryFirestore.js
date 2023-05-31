@@ -23,7 +23,8 @@ export default {
             Brugsdato: doc.data().Brugsdato,
             Brugte_produkter: doc.data().Brugte_produkter,
             id: doc.id,
-            tilknyttet: doc.data().Tilknyttet
+            tilknyttet: doc.data().Tilknyttet,
+            beskrivelse: doc.data().Beskrivelse
           });
         });
 
@@ -196,30 +197,33 @@ export default {
       //lager array med tilførte system qt korrektion
       this.$store.state.systemer.forEach((parentItem) => {
 
-        parentItem.Brugte_produkter.forEach((childItem) => {
+        if (parentItem.Opsatstatus != true) {
 
-          for (let i = 0; i < childItem.qt; i++) {
-            let index1 = this.$store.state.combos.indexOf(this.$store.state.combos.find((item) => item.id === childItem.id));
+          parentItem.Brugte_produkter.forEach((childItem) => {
 
-            this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
-
-              try {
-              
-                let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
-      
-                this.$store.state.lager[index].Qt_behov_til_systemer += 1;
-      
-                if (this.$store.state.lager[index].ForfaldDato == null && this.$store.state.lager[index].Qt_behov_til_systemer > this.$store.state.lager[index].Qt_på_lager) {
-                    this.$store.state.lager[index].ForfaldDato = new Date(parentItem.Brugsdato.seconds * 1000);
-                }
-      
-                } catch (error) {
-                  console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + subChildItem.id)
-                }
-
-          })
-          }
-        });
+            for (let i = 0; i < childItem.qt; i++) {
+              let index1 = this.$store.state.combos.indexOf(this.$store.state.combos.find((item) => item.id === childItem.id));
+  
+              this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
+  
+                try {
+                
+                  let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
+        
+                  this.$store.state.lager[index].Qt_behov_til_systemer += 1;
+        
+                  if (this.$store.state.lager[index].ForfaldDato == null && this.$store.state.lager[index].Qt_behov_til_systemer > this.$store.state.lager[index].Qt_på_lager) {
+                      this.$store.state.lager[index].ForfaldDato = new Date(parentItem.Brugsdato.seconds * 1000);
+                  }
+        
+                  } catch (error) {
+                    console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + subChildItem.id)
+                  }
+  
+            })
+            }
+          });
+        }
       });
 
 
