@@ -14,22 +14,21 @@
                 <div class="w-[100%] h-[100%] row-start-2 grid gap-[14px]" style="grid-template-columns: 55% 45%">
 
                     <div class="w-[100%] min-h-0 bg-white col-start-1 col-span-1 rounded-2xl grid overflow-hidden"
-                        style="grid-template-rows: 60px 60px 15fr">
+                        style="grid-template-rows: 50px 45px 15fr">
 
                         <div
                             class="w-[100%] h-[100%] row-start-1 row-span-1 items-center text-[19px] font-semibold flex flex-row relative">
-                            <h1 class="relative left-[15px] text-[#00214B]">Lager</h1>
+                            <h1 class="relative left-[15px] text-[16px] text-[#00214B]">Lager</h1>
                             <button @click="$router.push('/tilfoej_produkt')"
-                                class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
+                                class="bg-[#0097ff] text-white w-fit text-[14px] rounded-lg p-1 pl-2 pr-2 right-2 absolute">Tilføj
                                 produkter</button>
                         </div>
 
-                        <div class="w-[100%] h-[100%] bg-[#EAEEF3] row-start-2 row-span-1 grid items-center p-[18px] text-[14px] font-semibold text-[#9AA8BA]"
-                            style="grid-template-columns: 3fr 1fr 1fr 1fr 40px">
+                        <div class="w-[100%] h-[100%] bg-[#EAEEF3] row-start-2 row-span-1 grid items-center text-[12px] font-semibold text-[#9AA8BA] p-3 pl-[18px]"
+                            style="grid-template-columns: 2fr 1fr 1.5fr 40px">
                             <h1 class="col-start-1 col-span-1">Produktnavn</h1>
-                            <h1 class="col-start-2 col-span-1">Qt i alt</h1>
-                            <h1 class="col-start-3 col-span-1">Qt på lager</h1>
-                            <h1 class="col-start-4 col-span-1">Qt trail</h1>
+                            <h1 class="col-start-2 col-span-1">På lager</h1>
+                            <h1 class="col-start-3 col-span-1">info</h1>
 
                         </div>
 
@@ -43,21 +42,21 @@
                     </div>
 
                     <div class="w-[100%] min-h-0 bg-white col-start-2 col-span-1 rounded-2xl grid"
-                        style="grid-template-rows: 60px 60px 15fr">
+                        style="grid-template-rows: 50px 45px 15fr">
 
                         <div
                             class="w-[100%] h-[100%] row-start-1 row-span-1 grid items-center text-[19px] font-semibold relative">
-                            <h1 class="relative left-[15px] text-[#00214B]">In/Out oversigt</h1>
+                            <h1 class="relative left-[15px] text-[#00214B] text-[16px]">In/Out oversigt</h1>
                             <button @click="$router.push('/tilfoej_stock')"
-                                class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-2 absolute">Tilføj
+                                class="bg-[#0097ff] text-white w-fit text-[14px] rounded-lg p-1 pl-2 pr-2 right-2 absolute">Tilføj
                                 lager</button>
                         </div>
 
-                        <div class="w-[100%] h-[100%] bg-[#EAEEF3] row-start-2 row-span-1 grid items-center p-[18px] text-[14px] font-semibold text-[#9AA8BA]"
-                            style="grid-template-columns: 3fr 1fr 1fr 40px">
-                            <h1 class="col-start-1 col-span-1">Produktnavn</h1>
-                            <h1 class="col-start-2 col-span-1">Opdatering</h1>
-                            <h1 class="col-start-3 col-span-1">Dato</h1>
+                        <div class="w-[100%] h-[100%] bg-[#EAEEF3] row-start-2 row-span-1 grid items-center text-[12px] font-semibold text-[#9AA8BA] p-3 pl-[18px]"
+                            style="grid-template-columns: 1fr 1fr 0.5fr 0.5fr 1fr">
+                            <h1 class="col-start-1 col-span-1">Dato</h1>
+                            <h1 class="col-start-2 col-span-1">Antal Updates</h1>
+                            <h1 class="col-start-3 col-span-2">Ind/Ud total</h1>
 
                         </div>
 
@@ -65,7 +64,7 @@
                         <div
                             class="w-[100%] h-[100%] row-start-3 row-span-1 overflow-y-scroll [&::-webkit-scrollbar]:hidden">
 
-                            <Stock_tabs></Stock_tabs>
+                            <StockGroup_tabs></StockGroup_tabs>
 
                         </div>
 
@@ -88,7 +87,7 @@ import { db } from '@/firebase'
 
 //comp import
 import Lager_tabs from "../components/lager_tabs.vue";
-import Stock_tabs from "../components/stock_tabs.vue";
+import StockGroup_tabs from "../components/stock_tabs.vue";
 
 
 export default {
@@ -100,7 +99,7 @@ export default {
     },
     components: {
         Lager_tabs,
-        Stock_tabs
+        StockGroup_tabs
     },
     methods: {
         async createTest() {

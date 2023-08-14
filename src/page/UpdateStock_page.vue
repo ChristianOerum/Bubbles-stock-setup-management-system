@@ -39,17 +39,11 @@ import queryFirestore from "../mixins/queryFirestore";
 export default {
     data() {
         return {
-            name: this.$store.state.lagerUdInd[this.$store.state.TempIndex]
-                .Produktnavn,
-            correctionValue:
-                this.$store.state.lagerUdInd[this.$store.state.TempIndex].Update,
-            dateValue: new Date(
-                this.$store.state.lagerUdInd[this.$store.state.TempIndex].date * 1000
-            )
-                .toISOString()
-                .substr(0, 10),
-            beskrivelse:
-                this.$store.state.lagerUdInd[this.$store.state.TempIndex].beskrivelse,
+            name: this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].Produktnavn,
+            correctionValue: this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].Update,
+            dateValue: new Date(this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].date * 1000).toISOString().substr(0, 10),
+            beskrivelse: this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].beskrivelse,
+            oldCorrectionValue: this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].Update
         };
     },
     components: {
@@ -66,46 +60,62 @@ export default {
                 e.key != "ArrowLeft" &&
                 e.key != "ArrowRight"
             ) {
-                console.log(e.key);
+                console.log("Only Numbers allowed");
                 e.preventDefault();
             }
         },
 
         async updateStock() {
             try {
-                const ref = doc(
-                    db,
-                    "stock",
-                    this.$store.state.lagerUdInd[this.$store.state.TempIndex].id
+                const ref = doc(db, "stock", this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].id
                 );
                 await updateDoc(ref, {
                     date: new Date(this.dateValue),
                     update: Number(this.correctionValue),
                 });
 
-                console.log(
-                    "Updated " +
-                    this.$store.state.lagerUdInd[this.$store.state.TempIndex].id +
-                    " from: stock"
-                );
+
+
+                let productForQtCorrection = this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].productRefId
+                let productForQtCorrectionId = this.$store.state.lager.indexOf(this.$store.state.lager.find(product => product.id === this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].productRefId))
+
+                console.log()
+
+                const ref2 = doc(db, "produkter", productForQtCorrection);
+
+                if (Number(this.correctionValue) > 0) {
+                    await updateDoc(ref2, {
+                        StockQT: (Number(this.correctionValue) - this.oldCorrectionValue) + this.$store.state.lager[productForQtCorrectionId].Qt_på_lager
+                    });
+                    console.log("1")
+                } 
+                
+                else {
+                    await updateDoc(ref2, {
+                        StockQT: ((this.oldCorrectionValue - Number(this.correctionValue))*-1) + this.$store.state.lager[productForQtCorrectionId].Qt_på_lager
+                    });
+                    console.log("2")
+                }
+
+
+
+
+
+
+
+
+
+                console.log("Updated " + this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].id + " from: stock");
 
                 this.queryFirestore();
                 this.$router.push('/lager')
 
             } catch (error) {
-                console.error(
-                    "ERROR updating " +
-                    this.$store.state.lagerUdInd[this.$store.state.TempIndex].id +
-                    " from: stock " +
-                    error
+                console.error("ERROR updating " + this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].id + " from: stock " + error
                 );
             }
         },
     },
     mixins: [queryFirestore],
-
-    mounted() {
-        console.log(this.$store.state.lagerUdInd);
-    },
 };
 </script>

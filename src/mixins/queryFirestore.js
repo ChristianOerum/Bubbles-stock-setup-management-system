@@ -1,4 +1,4 @@
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export default {
@@ -9,39 +9,18 @@ export default {
     queryFirestore: async function () {
       this.$store.state.todaysDate = new Date(new Date().setHours(0, 0, 0, 0));
 
-      try {
-        const docRef = await getDocs(
-          query(collection(db, "systemer"), orderBy("Brugsdato"))
-        );
 
-        this.$store.state.systemer = [];
-
-        docRef.forEach((doc) => {
-          this.$store.state.systemer.push({
-            Systemnavn: doc.data().Systemnavn,
-            Opsatstatus: doc.data().Opsatstatus,
-            Brugsdato: doc.data().Brugsdato,
-            Brugte_produkter: doc.data().Brugte_produkter,
-            id: doc.id,
-            tilknyttet: doc.data().Tilknyttet,
-            beskrivelse: doc.data().Beskrivelse
-          });
-        });
-
-        console.log("read data from: systemer");
-      } catch (error) {
-        console.error("ERROR reading data from: systemer " + error);
-      }
-
+      //hent produkt/lager
       try {
         const docRef1 = await getDocs(collection(db, "produkter"));
+
         this.$store.state.lager = [];
 
         docRef1.forEach((doc) => {
           this.$store.state.lager.push({
             Produktnavn: doc.data().Produktnavn,
             Threshold: doc.data().Threshold,
-            Qt_på_lager: 0,
+            Qt_på_lager: doc.data().StockQT,
             Qt_prøveperiode: 0,
             id: doc.id,
             Qt_behov_til_systemer: 0,
@@ -49,9 +28,162 @@ export default {
           });
         });
 
+        //sorter lager i alfabetisk rækkefølge
+        this.$store.state.lager.sort(function (a, b) {
+          if (a.Produktnavn < b.Produktnavn) {
+            return -1;
+          }
+          if (a.Produktnavn > b.Produktnavn) {
+            return 1;
+          }
+          return 0;
+        });
+
+
         console.log("read data from: produkter");
       } catch (error) {
         console.error("ERROR reading data from: produkter " + error);
+      }
+
+      //hent combos
+      try {
+        const docRef5 = await getDocs(collection(db, "combos"));
+        this.$store.state.combos = [];
+
+        docRef5.forEach((doc) => {
+          this.$store.state.combos.push({
+            comboNavn: doc.data().navn,
+            comboIds: doc.data().combo,
+            id: doc.id
+          });
+        });
+
+        console.log("read data from: combos");
+      } catch (error) {
+        console.error("ERROR reading data from: combos " + error);
+      }
+
+
+
+      //sikre at hvis reQuery har været gjort, så bliver alle systemer indlæst næste gang queryFirestore funktionen køres
+      if (this.$store.state.completedReQueryRead == false) {
+
+        //Hent systemer som ikke er opsat
+        try {
+          const docRef = await getDocs(
+            query(collection(db, "systemer"), where("Opsatstatus", "==", false), orderBy("Brugsdato"))
+          );
+  
+          this.$store.state.systemer = [];
+  
+          docRef.forEach((doc) => {
+            this.$store.state.systemer.push({
+              Systemnavn: doc.data().Systemnavn,
+              Opsatstatus: doc.data().Opsatstatus,
+              Leveretstatus: doc.data().Leveretstatus,
+              Brugsdato: doc.data().Brugsdato,
+              Brugte_produkter: doc.data().Brugte_produkter,
+              id: doc.id,
+              tilknyttet: doc.data().Tilknyttet,
+              beskrivelse: doc.data().Beskrivelse
+            });
+          });
+
+          let tempDato
+
+          this.$store.state.systemer.forEach((parent) => {
+            if (parent.Opsatstatus != true) {
+              
+              tempDato = parent.Brugsdato.seconds
+
+              parent.Brugte_produkter.forEach((child) =>{
+                
+                if (child.qt > 0) {
+
+                  for(let i = 0; i < child.qt; i++){
+    
+                    let childRelatedCombo = this.$store.state.combos.find(combo => combo.id === child.id)
+                    
+                    childRelatedCombo.comboIds.forEach((relatedProductId) => {
+                      let tempProductIndex = this.$store.state.lager.indexOf(this.$store.state.lager.find(product => product.id === relatedProductId))
+                      this.$store.state.lager[tempProductIndex].Qt_behov_til_systemer += 1
+
+                      if (this.$store.state.lager[tempProductIndex].ForfaldDato == null && this.$store.state.lager[tempProductIndex].Qt_behov_til_systemer > this.$store.state.lager[tempProductIndex].Qt_på_lager ) {
+                        this.$store.state.lager[tempProductIndex].ForfaldDato = (new Date(tempDato*1000)).toLocaleDateString()
+                      }
+
+                    })
+ 
+                }
+              }
+            })
+          }
+          })
+  
+          console.log("read data from: systemer");
+        } catch (error) {
+          console.error("ERROR reading data from: systemer " + error);
+        }
+
+      } else {
+        
+        //hent alle systemer
+        try {
+          const docRef = await getDocs(
+            query(collection(db, "systemer"), orderBy("Brugsdato"))
+          );
+  
+          this.$store.state.systemer = [];
+  
+          docRef.forEach((doc) => {
+            this.$store.state.systemer.push({
+              Systemnavn: doc.data().Systemnavn,
+              Opsatstatus: doc.data().Opsatstatus,
+              Leveretstatus: doc.data().Leveretstatus,
+              Brugsdato: doc.data().Brugsdato,
+              Brugte_produkter: doc.data().Brugte_produkter,
+              id: doc.id,
+              tilknyttet: doc.data().Tilknyttet,
+              beskrivelse: doc.data().Beskrivelse
+            });
+          });
+
+          let tempDato
+
+          this.$store.state.systemer.forEach((parent) => {
+            if (parent.Opsatstatus != true) {
+              
+              tempDato = parent.Brugsdato.seconds
+
+              parent.Brugte_produkter.forEach((child) =>{
+                
+                if (child.qt > 0) {
+
+                  for(let i = 0; i < child.qt; i++){
+    
+                    let childRelatedCombo = this.$store.state.combos.find(combo => combo.id === child.id)
+                    
+                    childRelatedCombo.comboIds.forEach((relatedProductId) => {
+                      let tempProductIndex = this.$store.state.lager.indexOf(this.$store.state.lager.find(product => product.id === relatedProductId))
+                      this.$store.state.lager[tempProductIndex].Qt_behov_til_systemer += 1
+                      
+                      if (this.$store.state.lager[tempProductIndex].ForfaldDato == null && this.$store.state.lager[tempProductIndex].Qt_behov_til_systemer > this.$store.state.lager[tempProductIndex].Qt_på_lager ) {
+                        this.$store.state.lager[tempProductIndex].ForfaldDato = (new Date(tempDato*1000)).toLocaleDateString()
+                      }
+
+                    })
+ 
+                }
+              }
+            })
+          }
+          })
+  
+          console.log("read data from: systemer");
+        } catch (error) {
+          console.error("ERROR reading data from: systemer " + error);
+        }
+
       }
 
 
@@ -80,24 +212,6 @@ export default {
 
 
       try {
-        const docRef5 = await getDocs(collection(db, "combos"));
-        this.$store.state.combos = [];
-
-        docRef5.forEach((doc) => {
-          this.$store.state.combos.push({
-            comboNavn: doc.data().navn,
-            comboIds: doc.data().combo,
-            id: doc.id
-          });
-        });
-
-        console.log("read data from: combos");
-      } catch (error) {
-        console.error("ERROR reading data from: combos " + error);
-      }
-
-
-      try {
         const docRef4 = await getDocs(collection(db, "medarbejdere"));
         this.$store.state.medarbejdere = [];
 
@@ -105,7 +219,8 @@ export default {
           this.$store.state.medarbejdere.push({
             navn: doc.data().Navn,
             adresse: doc.data().Adresse,
-            id: doc.id
+            id: doc.id,
+            color: doc.data().Color
           });
         });
 
@@ -121,135 +236,64 @@ export default {
         );
 
         this.$store.state.lagerUdInd = [];
+        let previousDate = 0
+        let tempArr = []
+        let qtInd = 0
+        let qtUd = 0
 
         docRef2.forEach((doc) => {
           let temp_indexing_of_arr = this.$store.state.lager.map((ref) => ref.id).indexOf(doc.data().produkt_ref_id);
-          this.$store.state.lager[temp_indexing_of_arr].Qt_på_lager +=
-            doc.data().update;
 
-          this.$store.state.lagerUdInd.unshift({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.data().date.seconds, Update: doc.data().update, id: doc.id, beskrivelse: doc.data().beskrivelse, Systemgenereted: doc.data().Systemgenereted});
+          //stock tab group beregning
+          if (previousDate == new Date((doc.data().date.seconds)*1000).toLocaleDateString() || previousDate == 0) {
+            previousDate = new Date((doc.data().date.seconds)*1000).toLocaleDateString()
+          } else {
+
+            //sorter lager opdaterings array efter alfabetisk orden.
+            tempArr.sort(function (a, b) {
+              if (a.Produktnavn < b.Produktnavn) {
+                return -1;
+              }
+              if (a.Produktnavn > b.Produktnavn) {
+                return 1;
+              }
+              return 0;
+            });
+
+            this.$store.state.lagerUdInd.unshift({Date: previousDate, LagerUpdatesRef: tempArr, Ind: qtInd, Ud: qtUd});
+            tempArr = []
+            qtInd = 0
+            qtUd = 0
+            previousDate = new Date((doc.data().date.seconds)*1000).toLocaleDateString()
+          }
+
+          if (doc.data().update > 0) {
+            qtInd += doc.data().update
+          } else {
+            qtUd += doc.data().update
+          }
+
+          tempArr.push({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.data().date.seconds, Update: doc.data().update, id: doc.id, productRefId: doc.data().produkt_ref_id,  beskrivelse: doc.data().beskrivelse, Systemgenereted: doc.data().Systemgenereted});
+        
         });
 
+        this.$store.state.lagerUdInd.unshift({Date: previousDate, LagerUpdatesRef: tempArr, Ind: qtInd, Ud: qtUd});
+
+        console.log(this.$store.state.lagerUdInd)
+
         console.log("read data from: stock");
+
       } catch (error) {
         console.error("ERROR reading data from: stock " + error);
       }
 
 
-      //system automations medregnelse af varer ud, som følge af opsat system fra system siden.
-      let parentArr = []
-      let childArr = []
 
-      this.$store.state.systemer.forEach((system)=> {
 
-        if (system.Opsatstatus == true) {
-          if (childArr.length == 0 || new Date(system.Brugsdato.seconds*1000).toLocaleDateString() == new Date(childArr[0].Brugsdato.seconds*1000).toLocaleDateString()) {
-            childArr.unshift(system)
-          }
 
-          else {
-            parentArr.push(childArr)
-            childArr = []
 
-            childArr.unshift(system)
-          }
-          
+
+      
         }
-      })
-      parentArr.push(childArr)
-      childArr = []
-      
-      parentArr.forEach((group)=> {
-        group.forEach((parentItem)=>{
-
-          let tempArr = []
-
-          this.$store.state.lager.forEach((lagerItems) => {
-            tempArr.push({id: lagerItems.id, qt: 0, navn: lagerItems.Produktnavn })
-          })
-
-          //console.log("_____")
-          parentItem.Brugte_produkter.forEach((childItem)=>{
-            
-            if (childItem.qt != 0) {
-              let index1 = this.$store.state.combos.indexOf(this.$store.state.combos.find((item) => item.id === childItem.id));
-              this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
-
-                let tempIndex = tempArr.indexOf(tempArr.find((item) => item.id === subChildItem));
-                tempArr[tempIndex].qt += 1
-                //console.log(tempArr)
-              })
-            }
-          })
-
-          tempArr.forEach((item)=>{
-            if (item.qt != 0) {
-              let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((element) => element.id === item.id));
-              this.$store.state.lager[index].Qt_på_lager -= item.qt
-
-              this.$store.state.lagerUdInd.unshift({Produktnavn: item.navn, date: group[0].Brugsdato.seconds, Update: -item.qt, beskrivelse: "Korrektion som følge af opsætningen af: " + item.navn, Systemgenereted: true });
-            }
-          })
-        })
-      })
-
-
-      //lager array med tilførte system qt korrektion
-      this.$store.state.systemer.forEach((parentItem) => {
-
-        if (parentItem.Opsatstatus != true) {
-
-          parentItem.Brugte_produkter.forEach((childItem) => {
-
-            for (let i = 0; i < childItem.qt; i++) {
-              let index1 = this.$store.state.combos.indexOf(this.$store.state.combos.find((item) => item.id === childItem.id));
-  
-              this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
-  
-                try {
-                
-                  let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
-        
-                  this.$store.state.lager[index].Qt_behov_til_systemer += 1;
-        
-                  if (this.$store.state.lager[index].ForfaldDato == null && this.$store.state.lager[index].Qt_behov_til_systemer > this.$store.state.lager[index].Qt_på_lager) {
-                      this.$store.state.lager[index].ForfaldDato = new Date(parentItem.Brugsdato.seconds * 1000);
-                  }
-        
-                  } catch (error) {
-                    console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + subChildItem.id)
-                  }
-  
-            })
-            }
-          });
-        }
-      });
-
-
-      this.$store.state.demoSystemer.forEach((parentItem) => {
-
-        parentItem.Brugte_produkter.forEach((childItem) => {
-
-          for (let i = 0; i < childItem.qt; i++) {
-            let index1 = this.$store.state.combos.indexOf(this.$store.state.combos.find((item) => item.id === childItem.id));
-
-            this.$store.state.combos[index1].comboIds.forEach((subChildItem) => {
-
-              try {
-              
-                let index = this.$store.state.lager.indexOf(this.$store.state.lager.find((item) => item.id === subChildItem));
-      
-                this.$store.state.lager[index].Qt_prøveperiode += 1;
-                this.$store.state.lager[index].Qt_på_lager -= 1;
-      
-                } catch (error) {
-                  console.log("FEJL: Et system har tilknyttet et produkt, som er blevet slettet fra produkt kataloget: " + subChildItem.id)
-                }
-          })
-          }
-        });
-      });
-    },
-  },
-};
+      }
+}

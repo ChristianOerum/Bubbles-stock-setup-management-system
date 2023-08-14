@@ -1,15 +1,18 @@
 <template>
   <div v-for="(item, index) in this.$store.state.lager" v-bind:key="index">
-    <div v-if="index % 2 == 0" class="bg-white w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]"
-      style="grid-template-columns: 3fr 1fr 1fr 1fr 40px">
-      <h1 class="col-start-1 col-span-1"><fa v-if="item.Threshold >= item.Qt_på_lager" style="cursor: pointer" icon="circle-exclamation" class="w-auto h-[16px] mr-2 text-[#D24848]" />{{ item.Produktnavn }}</h1>
-      <h1 class="col-start-2 col-span-1">
-        {{ item.Qt_på_lager + item.Qt_prøveperiode }}
-      </h1>
-      <h1 class="col-start-3 col-span-1">{{ item.Qt_på_lager }}</h1>
-      <h1 class="col-start-4 col-span-1">{{ item.Qt_prøveperiode }}</h1>
+    <div v-if="index % 2 == 0" class="bg-white w-[100%] h-fit relative grid text-[14px] font-semibold p-3 pl-[18px]"
+      style="grid-template-columns: 2fr 1fr 1.5fr 40px">
+      <h1 class="col-start-1 col-span-1">{{ item.Produktnavn }}</h1>
+   
+      <div class="col-start-2 col-span-1 w-fit h-fit bg-[#0097FF] rounded-full">
+          <p class="text-[#ffffff] p-1 pl-3 pr-3 text-[12px]">{{ item.Qt_på_lager + ' x'}}</p>
+        </div>
 
-      <div class="col-start-5 col-span-1 text-[#9AA8BA]">
+      <div v-if="item.Threshold >= item.Qt_på_lager" class="col-start-3 col-span-1 w-fit h-fit bg-[#D24848] rounded-full">
+        <p class="text-[#ffffff] p-1 pl-3 pr-3 text-[12px]">LAV LAGERSTATUS!</p>
+      </div>
+
+      <div class="col-start-4 col-span-1 text-[#9AA8BA]">
         <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
         <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can" class="w-auto h-[16px] ml-2" />
       </div>
@@ -17,16 +20,19 @@
       <div class="bg-[#EFF3F8] bottom-[0px] w-[100%] h-[4px] absolute"></div>
     </div>
 
-    <div v-else class="bg-[#F6FAFF] w-[100%] h-[60px] relative grid text-[15px] font-semibold p-[18px]"
-      style="grid-template-columns: 3fr 1fr 1fr 1fr 40px">
-      <h1 class="col-start-1 col-span-1"><fa v-if="item.Threshold >= item.Qt_på_lager" style="cursor: pointer" icon="circle-exclamation" class="w-auto h-[16px] mr-2 text-[#D24848]" />{{ item.Produktnavn }}</h1>
-      <h1 class="col-start-2 col-span-1">
-        {{ item.Qt_på_lager + item.Qt_prøveperiode }}
-      </h1>
-      <h1 class="col-start-3 col-span-1">{{ item.Qt_på_lager }}</h1>
-      <h1 class="col-start-4 col-span-1">{{ item.Qt_prøveperiode }}</h1>
+    <div v-else class="bg-[#F6FAFF] w-[100%] h-fit relative grid text-[14px] font-semibold p-3 pl-[18px]"
+      style="grid-template-columns: 2fr 1fr 1.5fr 40px">
+      <h1 class="col-start-1 col-span-1">{{ item.Produktnavn }}</h1>
 
-      <div class="col-start-5 col-span-1 text-[#9AA8BA]">
+        <div class="col-start-2 col-span-1 w-fit h-fit bg-[#0097FF] rounded-full">
+          <p class="text-[#ffffff] p-1 pl-3 pr-3 text-[12px]">{{ item.Qt_på_lager  + ' x'}}</p>
+        </div>
+
+        <div v-if="item.Threshold >= item.Qt_på_lager" class="col-start-3 col-span-1 w-fit h-fit bg-[#D24848] rounded-full">
+          <p class="text-[#ffffff] p-1 pl-3 pr-3 text-[12px]">LAV LAGERSTATUS!</p>
+        </div>
+
+      <div class="col-start-4 col-span-1 text-[#9AA8BA]">
         <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
         <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can" class="w-auto h-[16px] ml-2" />
       </div>
@@ -37,15 +43,7 @@
 </template>
 
 <script>
-import {
-  deleteDoc,
-  doc,
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-} from "firebase/firestore";
+import {deleteDoc, doc, collection, query, where, getDocs, orderBy, } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export default {

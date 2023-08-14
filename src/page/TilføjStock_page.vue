@@ -35,7 +35,7 @@
 
 <script>
 //firebase
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from '@/firebase'
 
 
@@ -86,6 +86,16 @@ export default {
                     date: new Date(this.dateValue),
                     beskrivelse: this.Beskrivelse
                 });
+                
+                let productForQtCorrection = this.$store.state.lager.indexOf(this.$store.state.lager.find(product => product.id === this.SelectedOption.value))
+
+
+                const ref = doc(db, "produkter", this.$store.state.lager[productForQtCorrection].id
+                );
+                await updateDoc(ref, {
+                    StockQT: this.$store.state.lager[productForQtCorrection].Qt_på_lager + Number(this.correctionValue)
+                });
+
 
                 this.queryFirestore()
                 this.$router.push('/lager')

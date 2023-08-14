@@ -17,8 +17,11 @@ const store = createStore({
         todaysDate: "",
         visiblePage: "Lager",
         TempIndex: null,
+        TempIndex2: null,
         HideCompleted: true,
-        HideOutOfDate: true
+        HideOutOfDate: false,
+        HideDelivered: true,
+        completedReQueryRead: false,
     }
   })
 

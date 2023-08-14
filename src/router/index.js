@@ -21,6 +21,8 @@ import UpdateDemoSystem from '../page/UpdateDemoSystem_page.vue'
 import ManageCombos from '../page/Combo_page.vue'
 import TilføjCombos from '../page/TilføjCombo_page.vue'
 
+import InUdOversigt from '../page/In_udOversigt_page.vue'
+
 const routes = [
     {
         path: '/',
@@ -124,6 +126,13 @@ const routes = [
     {
       path: '/tilfoej_combo',
       component: TilføjCombos,
+      meta: {
+          requiresAuth: true
+        }
+    },
+    {
+      path: '/in_ud_oversigt',
+      component: InUdOversigt,
       meta: {
           requiresAuth: true
         }
