@@ -7,10 +7,10 @@
 
         <div class="w-[400px] h-[50px] grid grid-cols-7 rounded-lg bg-[#F1F7FF] relative">
             <input v-if="!show" placeholder="•••••••••"
-                class="col-span-7 bg-[#F1F7FF] text-[#00214B] rounded-lg text-center focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold text-xl"
+                class="col-span-7 bg-[#F1F7FF] text-[#00214B] rounded-lg text-center focus:outline-[3px] focus:outline outline-[#0097ff] font-poppins font-semibold text-xl"
                 type='password' :value="modelValue" v-on:input="updateData($event)" />
             <input v-else placeholder="Password"
-                class="col-span-7 bg-[#F1F7FF] text-[#00214B] rounded-lg text-center focus:outline-4 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold text-xl"
+                class="col-span-7 bg-[#F1F7FF] text-[#00214B] rounded-lg text-center focus:outline-[3px] focus:outline outline-[#0097ff] font-poppins font-semibold text-xl"
                 type='text' :value="modelValue" v-on:input="updateData($event)" />
             <button v-if="!show"
                 class="h-[50px] w-[50px] text-[#00214B] bg-[#F1F7FF] rounded-lg font-poppins font-semibold text-lg absolute right-0"
@@ -37,7 +37,11 @@
 </template>
 
 <script>
+//comps
 import SVGcreater from '../components/svgCreater.vue'
+
+//mixins
+import queryFirestore from "../mixins/queryFirestore";
 
 export default {
     data() {
@@ -65,6 +69,7 @@ export default {
                 this.show = false
             }
         }
-    }
+    },
+    mixins:[queryFirestore]
 }
 </script>

@@ -22,6 +22,13 @@ const store = createStore({
         HideOutOfDate: false,
         HideDelivered: true,
         completedReQueryRead: false,
+        systemQueryAmountMultiplier: 1,
+        stockQueryAmountMultiplier: 1,
+        showPreloader: false,
+        showErrorMessage: false,
+        errorMessage: "",
+        showSuccessMessage: false,
+        successMessage: ""
     }
   })
 
@@ -33,6 +40,8 @@ import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 
 import App from './App.vue'
 import './assets/tailwind.css'
+import './assets/css/custom-font.css' 
+
 
 library.add(fas)
 

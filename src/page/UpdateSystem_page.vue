@@ -2,7 +2,7 @@
    <div class="bg-white w-screen h-screen flex flex-col justify-center items-center relative">
 
     <div class="bg-[#F1F7FF] p-6 rounded-xl grid grid-cols-2 gap-4">
-        <h1 class="font-semibold text-[24px] text-[#00214B]">
+        <h1 class="font-bold text-[24px] text-[#00214B]">
             Opdater system detaljer
         </h1>
 
@@ -174,35 +174,68 @@ export default {
         },
 
         async updateSystem() {
-            try {
-                const ref = doc(db, "systemer", this.$store.state.systemer[this.$store.state.TempIndex].id
-                );
-                await updateDoc(ref, {
-                    Brugsdato: new Date(this.dateValue),
-                    Brugte_produkter: this.BrugteProdukter,
-                    Opsatstatus: this.SelectedOptionOpsat.value,
-                    Leveretstatus: this.SelectedOptionLeveret.value,
-                    Systemnavn: this.SystemNavn,
-                    Tilknyttet: this.SelectedOptionEmployee.id,
-                    Beskrivelse: this.beskrivelse
-                });
 
-                console.log("Updated " + this.$store.state.systemer[this.$store.state.TempIndex].id + " from: systemer"
-                );
+            if (this.dateValue != null && this.SelectedOptionOpsat.length != 0 && this.SelectedOptionLeveret.length != 0 && this.SelectedOptionEmployee.length != 0 && this.SystemNavn != '') {
 
-                if (this.Opsatstatus == true) {
-                    for (const item in this.BrugteProdukter) {
-                        console.log(item.id);
-                    }
+                try {
+                    const ref = doc(db, "systemer", this.$store.state.systemer[this.$store.state.TempIndex].id
+                    );
+                    await updateDoc(ref, {
+                        Brugsdato: new Date(this.dateValue),
+                        Brugte_produkter: this.BrugteProdukter,
+                        Opsatstatus: this.SelectedOptionOpsat.value,
+                        Leveretstatus: this.SelectedOptionLeveret.value,
+                        Systemnavn: this.SystemNavn,
+                        Tilknyttet: this.SelectedOptionEmployee.id,
+                        Beskrivelse: this.beskrivelse
+                    });
+
+                    this.queryFirestore();
+                    this.$router.push('/systemer')
+
+
+                    console.log("Updated " + this.$store.state.systemer[this.$store.state.TempIndex].id + " from: systemer");
+
+                    this.$store.state.showSuccessMessage = true
+                    this.$store.state.successMessage = "Data blev opdateret i 'Systemer' databasen. "
+                    console.log(this.$store.state.errorMessage )
+
+                    setTimeout(() => {
+                        this.$store.state.showSuccessMessage = false
+                        this.$store.state.successMessage = ""
+                    }, 5000)
+
+
+                } catch (error) {
+                    console.error("ERROR updating " +  this.$store.state.systemer[this.$store.state.TempIndex].id + " from: systemer " + error);
+
+                    this.$store.state.showErrorMessage = true
+                    this.$store.state.errorMessage = "Kunne ikke opdaterer " + this.$store.state.systemer[this.$store.state.TempIndex].id + ": "  + error
+                    console.log(this.$store.state.errorMessage )
+
+                    setTimeout(() => {
+                        this.$store.state.showErrorMessage = false
+                        this.$store.state.errorMessage = ""
+                    }, 5000)
+
+
                 }
 
-                this.queryFirestore();
-                this.$router.push('/systemer')
-
-            } catch (error) {
-                console.error("ERROR updating " +  this.$store.state.systemer[this.$store.state.TempIndex].id + " from: systemer " + error
-                );
             }
+
+            else {
+
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Du har ikke udfyldt alle fælterne i formularen, check om du har overset et fælt."
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+
+            }
+
         },
     },
     mixins: [queryFirestore],
@@ -262,7 +295,7 @@ export default {
 
             this.SelectedOptionEmployee = this.$store.state.medarbejdere[index]
 
-            console.log(this.$store.state.medarbejdere[index])
+            //console.log(this.$store.state.medarbejdere[index])
 
             } catch (error) {
                     console.error("Id ej fundet, medarbejderen er tidligere blevet slettet fra databasen ", error);

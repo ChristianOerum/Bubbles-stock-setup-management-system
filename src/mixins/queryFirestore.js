@@ -1,4 +1,4 @@
-import { collection, getDocs, query, orderBy, where } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, where, limit } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export default {
@@ -7,8 +7,10 @@ export default {
   },
   methods: {
     queryFirestore: async function () {
-      this.$store.state.todaysDate = new Date(new Date().setHours(0, 0, 0, 0));
 
+      this.$store.state.showPreloader = true
+
+      this.$store.state.todaysDate = new Date(new Date().setHours(0, 0, 0, 0));
 
       //hent produkt/lager
       try {
@@ -25,6 +27,7 @@ export default {
             id: doc.id,
             Qt_behov_til_systemer: 0,
             ForfaldDato: null,
+            Deliveries: []
           });
         });
 
@@ -40,7 +43,7 @@ export default {
         });
 
 
-        console.log("read data from: produkter");
+        //console.log("read data from: produkter");
       } catch (error) {
         console.error("ERROR reading data from: produkter " + error);
       }
@@ -58,7 +61,7 @@ export default {
           });
         });
 
-        console.log("read data from: combos");
+        //console.log("read data from: combos");
       } catch (error) {
         console.error("ERROR reading data from: combos " + error);
       }
@@ -120,7 +123,7 @@ export default {
           }
           })
   
-          console.log("read data from: systemer");
+          //console.log("read data from: systemer");
         } catch (error) {
           console.error("ERROR reading data from: systemer " + error);
         }
@@ -130,11 +133,15 @@ export default {
         //hent alle systemer
         try {
           const docRef = await getDocs(
-            query(collection(db, "systemer"), orderBy("Brugsdato"))
+            query(collection(db, "systemer"), orderBy("Opsatstatus"), limit((this.$store.state.systemQueryAmountMultiplier*10) + this.$store.state.systemer.length))
           );
   
           this.$store.state.systemer = [];
-  
+
+
+          console.log((this.$store.state.systemQueryAmountMultiplier*10) + this.$store.state.systemer.length)
+
+
           docRef.forEach((doc) => {
             this.$store.state.systemer.push({
               Systemnavn: doc.data().Systemnavn,
@@ -147,6 +154,12 @@ export default {
               beskrivelse: doc.data().Beskrivelse
             });
           });
+
+          //sorter array så de kommer i dato rækkefølge
+          this.$store.state.systemer .sort(function(a,b){
+            return (a.Brugsdato.seconds) - (b.Brugsdato.seconds) ;
+          });
+
 
           let tempDato
 
@@ -179,7 +192,7 @@ export default {
           }
           })
   
-          console.log("read data from: systemer");
+          //console.log("read data from: systemer");
         } catch (error) {
           console.error("ERROR reading data from: systemer " + error);
         }
@@ -205,7 +218,7 @@ export default {
           });
         });
 
-        console.log("read data from: demoSystemer");
+        //console.log("read data from: demoSystemer");
       } catch (error) {
         console.error("ERROR reading data from: demoSystemer " + error);
       }
@@ -224,68 +237,124 @@ export default {
           });
         });
 
-        console.log("read data from: medarbejdere");
+        //console.log("read data from: medarbejdere");
       } catch (error) {
         console.error("ERROR reading data from: medarbejdere " + error);
       }
 
 
+
+      //let allStockItems = []
+
+      //query 1, alle med ikke leveret
       try {
-        const docRef2 = await getDocs(
-          query(collection(db, "stock"), orderBy("date"))
+        const docRef1 = await getDocs(
+          query(collection(db, "stock"), where("leveret", "==", false), orderBy("date"))
         );
 
-        this.$store.state.lagerUdInd = [];
-        let previousDate = 0
-        let tempArr = []
-        let qtInd = 0
-        let qtUd = 0
+        //query 2, x antal som er leveret
+        try {
+          const docRef2 = await getDocs(
+            query(collection(db, "stock"), where("leveret", "==", true), orderBy("date"), limit((this.$store.state.stockQueryAmountMultiplier*10)))
+          );
+  
+          //udpak query 1 og tillæg dets id'er
+          const queryResult1 = docRef1.docs.map((doc) => {
+            const data = doc.data();
+            const id = doc.id;
+            return { ...data, id }
+          })
 
-        docRef2.forEach((doc) => {
-          let temp_indexing_of_arr = this.$store.state.lager.map((ref) => ref.id).indexOf(doc.data().produkt_ref_id);
+          //udpak query 2 og tillæg dets id'er
+          const queryResult2 = docRef2.docs.map((doc) => {
+            const data = doc.data();
+            const id = doc.id;
+            return { ...data, id }
+          })
 
-          //stock tab group beregning
-          if (previousDate == new Date((doc.data().date.seconds)*1000).toLocaleDateString() || previousDate == 0) {
-            previousDate = new Date((doc.data().date.seconds)*1000).toLocaleDateString()
-          } else {
+          //sammenlæg de 2 querys
+          const combinedData = queryResult1.concat(queryResult2);
+          
 
-            //sorter lager opdaterings array efter alfabetisk orden.
-            tempArr.sort(function (a, b) {
-              if (a.Produktnavn < b.Produktnavn) {
-                return -1;
+          //calc related to stock items.
+          this.$store.state.lagerUdInd = [];
+          let previousDate = 0
+          let tempArr = []
+          let qtInd = 0
+          let qtUd = 0
+          let qtPåVej = 0
+  
+          combinedData.forEach((doc) => {
+            let temp_indexing_of_arr = this.$store.state.lager.map((ref) => ref.id).indexOf(doc.produkt_ref_id);
+  
+            if (doc.leveret != true) {
+  
+              this.$store.state.lager[temp_indexing_of_arr].LagerIncommingDelivery = true
+  
+              //Indsæt stock som er under levering til arrayet i .lager for hvert produkt.
+              if (this.$store.state.lager[temp_indexing_of_arr].LagerDeliveryDate == null) {
+                this.$store.state.lager[temp_indexing_of_arr].Deliveries.unshift({LagerDeliveryDate: doc.date.seconds, LagerDeliveryQT: doc.update})
               }
-              if (a.Produktnavn > b.Produktnavn) {
-                return 1;
-              }
-              return 0;
-            });
+  
+            }
+  
+            //stock tab group beregning
+            if (previousDate == new Date((doc.date.seconds)*1000).toLocaleDateString() || previousDate == 0) {
+              previousDate = new Date((doc.date.seconds)*1000).toLocaleDateString()
+            } else {
+  
+              //sorter lager opdaterings array efter alfabetisk orden.
+              tempArr.sort(function (a, b) {
+                if (a.Produktnavn < b.Produktnavn) {
+                  return -1;
+                }
+                if (a.Produktnavn > b.Produktnavn) {
+                  return 1;
+                }
+                return 0;
+              });
+  
+              this.$store.state.lagerUdInd.unshift({Date: previousDate, LagerUpdatesRef: tempArr, Ind: qtInd, Ud: qtUd, PåVej: qtPåVej});
+              tempArr = []
+              qtInd = 0
+              qtUd = 0
+              qtPåVej = 0
+              previousDate = new Date((doc.date.seconds)*1000).toLocaleDateString()
+            }
+  
+            if (doc.update > 0 && doc.leveret == true) {
+              qtInd += doc.update
+            } 
+            
+            else if (doc.update > 0 && doc.leveret == false) {
+              qtPåVej += doc.update
+            }
+            
+            else if (doc.leveret == true) {
+              qtUd += doc.update
+            }
+  
+            tempArr.push({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.date.seconds, Update: doc.update, id: doc.id, productRefId: doc.produkt_ref_id,  beskrivelse: doc.beskrivelse, leveret: doc.leveret});
+          
+          });
+  
+          this.$store.state.lagerUdInd.unshift({Date: previousDate, LagerUpdatesRef: tempArr, Ind: qtInd, Ud: qtUd, PåVej: qtPåVej});
+  
 
-            this.$store.state.lagerUdInd.unshift({Date: previousDate, LagerUpdatesRef: tempArr, Ind: qtInd, Ud: qtUd});
-            tempArr = []
-            qtInd = 0
-            qtUd = 0
-            previousDate = new Date((doc.data().date.seconds)*1000).toLocaleDateString()
-          }
+          //console.log(this.$store.state.lager)
+          //console.log(this.$store.state.lagerUdInd)
 
-          if (doc.data().update > 0) {
-            qtInd += doc.data().update
-          } else {
-            qtUd += doc.data().update
-          }
+          this.$store.state.showPreloader = false
 
-          tempArr.push({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.data().date.seconds, Update: doc.data().update, id: doc.id, productRefId: doc.data().produkt_ref_id,  beskrivelse: doc.data().beskrivelse, Systemgenereted: doc.data().Systemgenereted});
-        
-        });
-
-        this.$store.state.lagerUdInd.unshift({Date: previousDate, LagerUpdatesRef: tempArr, Ind: qtInd, Ud: qtUd});
-
-        console.log(this.$store.state.lagerUdInd)
-
-        console.log("read data from: stock");
+        } catch (error) {
+          console.error("ERROR reading data2 from: stock " + error);
+        }
 
       } catch (error) {
-        console.error("ERROR reading data from: stock " + error);
+        console.error("ERROR reading data1 from: stock " + error);
       }
+
+
 
 
 

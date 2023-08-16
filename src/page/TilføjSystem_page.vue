@@ -2,7 +2,7 @@
     <div class="bg-white w-screen h-screen flex flex-col justify-center items-center relative">
 
         <div class="bg-[#F1F7FF] p-6 rounded-xl grid grid-cols-2 gap-4">
-            <h1 class="font-semibold text-[24px] text-[#00214B]">
+            <h1 class="font-bold text-[24px] text-[#00214B]">
                 Tilføj nyt system
             </h1>
 
@@ -94,8 +94,8 @@
             </div>
 
             <button @click="createSystem"
-                class="bg-[#0097ff] text-white w-fit text-[18px] font-semibold rounded-lg p-2 right-2">
-                Godkend
+                class="bg-[#0097ff] text-white w-fit text-[14px] font-medium rounded-lg p-2 right-2">
+                Tilføj system
             </button>
 
         </div>
@@ -183,7 +183,11 @@ export default {
         },
 
         async createSystem() {
-            try {
+
+
+            if (this.dateValue != null && this.SelectedOptionOpsat.length != 0 && this.SelectedOptionLeveret.length != 0 && this.SelectedOptionEmployee.length != 0 && this.SystemNavn != '') {
+
+                try {
                 await addDoc(collection(db, "systemer"), {
                     Brugsdato: new Date(this.dateValue),
                     Brugte_produkter: this.BrugteProdukter,
@@ -197,10 +201,46 @@ export default {
                 this.queryFirestore();
                 this.$router.push('/systemer')
 
-                console.log("Added document to: stock");
+                this.$store.state.showSuccessMessage = true
+                this.$store.state.successMessage = "Data blev tilføjet til 'Systemer' databasen. "
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showSuccessMessage = false
+                    this.$store.state.successMessage = ""
+                }, 5000)
+
             } catch (error) {
-                console.error("Error adding document to stock: ", error);
+                
+                console.error("Error adding document to systemer: ", error);
+
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Dataindsætnings problem: " + error
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+
             }
+
+            }
+
+            else {
+
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Du har ikke udfyldt alle fælterne i formularen, check om du har overset et fælt."
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+            }
+
+
+
         },
     },
     mixins: [queryFirestore],

@@ -1,0 +1,24 @@
+@font-face {
+    font-family: 'axiforma-bold';
+    src: url('../fonts/Axiforma-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'axiforma-black';
+    src: url('../fonts/Axiforma-Black.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'axiforma-medium';
+    src: url('../fonts/Axiforma-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'axiforma-semibold';
+    src: url('../fonts/Axiforma-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'axiforma-regular';
+    src: url('../fonts/Axiforma-Regular.ttf') format('truetype');
+}

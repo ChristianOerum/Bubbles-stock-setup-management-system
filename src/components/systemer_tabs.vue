@@ -340,10 +340,28 @@ export default {
 
                 this.queryFirestore()
 
+                this.$store.state.showSuccessMessage = true
+                this.$store.state.successMessage = "Systemet blev slettet fra 'Systemer' databasen "
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showSuccessMessage = false
+                    this.$store.state.successMessage = ""
+                }, 5000)
 
 
             } catch (error) {
                 console.error("ERROR deleting " + this.$store.state.systemer[index].id + " from: systemer " + error);
+
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Kunne ikke slette data fra 'Systemer' databasen: " + error
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+
             }
         }
     },

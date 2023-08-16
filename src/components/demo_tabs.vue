@@ -60,14 +60,33 @@ export default {
 
                 console.log(this.$store.state.demoSystemer)
 
-                console.log("deleted " + this.$store.state.demoSystemer[index].id + "(" + this.$store.state.demoSystemer[index].Systemnavn + ")" + " from: demo-systemer");
-
                 this.queryFirestore()
 
+
+                console.log("deleted " + this.$store.state.demoSystemer[index].id + "(" + this.$store.state.demoSystemer[index].Systemnavn + ")" + " from: demo-systemer");
+
+                this.$store.state.showSuccessMessage = true
+                this.$store.state.successMessage = "Data blev slettet i 'Demo system' databasen."
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showSuccessMessage = false
+                    this.$store.state.successMessage = ""
+                }, 5000)
 
 
             } catch (error) {
                 console.error("ERROR deleting " + this.$store.state.systemer[index].id + " from: demo-systemer " + error);
+
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Kunne ikke slette data fra 'Demo-systemer' databasen: " + error
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+
             }
         }
     },

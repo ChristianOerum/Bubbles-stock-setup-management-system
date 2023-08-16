@@ -14,10 +14,6 @@ import UpdateProdukt from '../page/UpdateProdukt_page.vue'
 import UpdateStock from '../page/UpdateStock_page.vue'
 import UpdateSystem from '../page/UpdateSystem_page.vue'
 
-import DemoSystem from '../page/Demo_page.vue'
-import TilføjDemoSystem from '../page/tilføjDemoSystem_page'
-import UpdateDemoSystem from '../page/UpdateDemoSystem_page.vue'
-
 import ManageCombos from '../page/Combo_page.vue'
 import TilføjCombos from '../page/TilføjCombo_page.vue'
 
@@ -25,7 +21,14 @@ import InUdOversigt from '../page/In_udOversigt_page.vue'
 
 const routes = [
     {
-        path: '/',
+      path: '/',
+      redirect: '/dashboard',
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+        path: '/dashboard',
         component: Home,
         meta: {
             requiresAuth: true
@@ -96,27 +99,6 @@ const routes = [
           }
     },
     {
-      path: '/demo_systemer',
-      component: DemoSystem,
-      meta: {
-          requiresAuth: true
-        }
-    },
-    {
-      path: '/tilfoej_demo_system',
-      component: TilføjDemoSystem,
-      meta: {
-          requiresAuth: true
-        }
-    },
-    {
-      path: '/update_demo_system',
-      component: UpdateDemoSystem,
-      meta: {
-          requiresAuth: true
-        }
-    },
-    {
       path: '/manage_combos',
       component: ManageCombos,
       meta: {
@@ -151,7 +133,7 @@ router.beforeEach((to, from, next) => {
 
     let localPasswordStorage = localStorage.getItem("Password")
     let accessPassword = process.env.VUE_APP_ACCESS_PIN
-
+   
     if (to.matched.some(record => record.meta.requiresAuth)) {
       // this route requires auth, check if logged in
       // if not, redirect to login page.

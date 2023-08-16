@@ -1,24 +1,24 @@
 <template>
-    <div @click.self="goToLagerPage" class="bg-white w-screen h-screen flex flex-col justify-center items-center relative">
-        <div class="bg-[#F1F7FF] w-auto h-auto rounded-xl flex flex-col justify-center p-5 items-right relative">
+    <div @click.self="goToLagerPage" class="bg-white w-screen h-screen flex justify-center items-center relative">
+        <div class="bg-[#F1F7FF] w-auto h-auto rounded-xl justify-center p-5 items-right relative flex flex-row gap-4 text-[14px]">
 
-            <h1 class="font-semibold text-[24px] text-[#00214B] mb-2">Ændr combo (vælg)</h1>
+            <div>
+                <h1 class="font-bold text-[24px] text-[#00214B] mb-2">Ændr combo (vælg)</h1>
 
-            <button @click="$router.push('/tilfoej_combo')" class="bg-[#0097ff] text-white w-fit text-[16px] rounded-lg p-2 right-5 top-4 absolute">Tilføj ny</button>
+                <div class="overflow-y-scroll w-[400px] h-[458px]">
+                    <button v-on:click="comboClick($event, index)" v-for="(item, index) in this.$store.state.combos" v-bind:key="index" class="h-[40px] w-[100%] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
+                            {{ item.comboNavn }}
+                    </button>
+                </div>
 
-            <div class="overflow-y-scroll w-[400px] h-[200px]">
-                <button v-on:click="comboClick($event, index)" v-for="(item, index) in this.$store.state.combos" v-bind:key="index" class="h-[40px] w-[100%] bg-[#DDECFF] text-[#0097ff] font-semibold indent-[15px] text-left">
-                        {{ item.comboNavn }}
-                </button>
+                <button @click="$router.push('/tilfoej_combo')" class="bg-[#0097ff] text-white w-fit text-[14px] font-medium mt-[20px] rounded-lg p-2">Tilføj ny</button>
+
             </div>
 
             <div v-if="this.showComboInstance == true" class="relative">
 
-                <div class="w-100 h-[4px] bg-black mt-4 rounded-full opacity-10"></div>
-
-                <h1 class="font-semibold text-[24px] text-[#00214B] mt-4 mb-2">({{ this.ComboInstanceName }})</h1>
-
-                <fa style="cursor: pointer" @click="deleteFromDB()" icon="trash-can" class="absolute w-auto right-4 top-11 h-[16px] ml-2" />
+                
+                    <h1 class="font-bold text-[24px] text-[#00214B] mb-2">({{ this.ComboInstanceName }})</h1>
 
                 <input type="text" placeholder="Combo navn" class="indent-[15px] h-[50px] w-[400px] bg-white text-[#00214B] rounded-lg text-left focus:outline-4 mb-2 focus:outline outline-offset-4 outline-[#0097ff] font-poppins font-semibold" v-model="nytComboNavn" />
 
@@ -31,9 +31,11 @@
                     <p class="absolute right-3 text-[#00214B]">x</p>
                 </div>
 
-                <button @click="updateCombo()" class="bg-[#0097ff] text-white w-fit text-[18px] font-semibold rounded-lg p-2 mt-[20px] right-2">
+                <button @click="updateCombo()" class="bg-[#0097ff] text-white w-fit text-[14px] font-medium rounded-lg p-2 mt-[20px] right-2">
                     Opdater
                 </button>
+
+                <fa style="cursor: pointer" @click="deleteFromDB()" icon="trash-can" class="text-[20px] absolute right-0 bottom-3 text-[#D24848]" />
 
             </div>
 
@@ -46,7 +48,7 @@
 
 <script>
 //firebase
-import { collection, addDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from '@/firebase'
 
 //mixins
@@ -66,25 +68,6 @@ export default {
     components: {
     },
     methods: {
-        goToLagerPage() {
-            this.$store.state.visiblePage = "Lager"
-        },
-
-        async createProdukt() {
-            try {
-                await addDoc(collection(db, "produkter"), {
-                    Produktnavn: this.fieldValue
-                });
-
-                this.queryFirestore()
-                this.$router.push('/lager')
-
-                console.log("Added document to: produkter");
-            } catch (error) {
-                console.error("Error adding document to produkter: ", error);
-            }
-
-        },
 
         async deleteFromDB() {
             console.log(this.tempIndex)
@@ -97,8 +80,27 @@ export default {
 
                 this.queryFirestore()
 
+                this.$store.state.showSuccessMessage = true
+                this.$store.state.successMessage = "Slettede " + this.$store.state.combos[this.tempIndex].id + " fra combos."
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showSuccessMessage = false
+                    this.$store.state.successMessage = ""
+                }, 5000)
+
+
             } catch (error) {
-                console.error("ERROR deleting " + this.$store.state.combos[this.tempIndex].id + " from: combos " + error);
+
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Kunne ikke slette " + this.$store.state.combos[this.tempIndex].id + ": " + error
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+
             }
 
         },
@@ -158,13 +160,29 @@ export default {
                     combo: selectedArr
                 });
 
-                console.log("Updated combo from: combos");
+                this.$store.state.showSuccessMessage = true
+                this.$store.state.successMessage = "Data blev opdateret i 'Combo' databasen. "
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showSuccessMessage = false
+                    this.$store.state.successMessage = ""
+                }, 5000)
                 
-                this.queryFirestore();
-                location.reload()
+                this.queryFirestore()
 
             } catch (error) {
                 console.error("ERROR updating combo from: combos " + error);
+
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Kunne ikke opdaterer data i 'Combo' databasen: " + error
+                console.log(this.$store.state.errorMessage )
+
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+
             }
 
         }

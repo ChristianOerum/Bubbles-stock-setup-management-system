@@ -4,7 +4,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Poppins']
+        bold: ['axiforma-bold'],
+        black: ['axiforma-black'],
+        medium: ['axiforma-medium'],
+        semibold: ['axiforma-semibold'],
+        regular: ['axiforma-regular']
       }
     },
   },
