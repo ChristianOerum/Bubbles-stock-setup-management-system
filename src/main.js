@@ -15,20 +15,33 @@ const store = createStore({
         combos: [],
         medarbejdere: [],
         todaysDate: "",
-        visiblePage: "Lager",
+        
         TempIndex: null,
         TempIndex2: null,
+
         HideCompleted: true,
         HideOutOfDate: false,
         HideDelivered: true,
+
         completedReQueryRead: false,
         systemQueryAmountMultiplier: 1,
         stockQueryAmountMultiplier: 1,
+
         showPreloader: false,
+
         showErrorMessage: false,
         errorMessage: "",
         showSuccessMessage: false,
-        successMessage: ""
+        successMessage: "",
+
+        showConfirmation: false,
+        TempId: "",
+
+        leverancerDashboard: [],
+
+        systemerDashboard: [],
+        systemerRed: false,
+        stockStatus: ""
     }
   })
 

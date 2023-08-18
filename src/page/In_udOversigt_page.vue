@@ -25,9 +25,13 @@
 
                     <p class="col-start-4 col-span-1 text-[#00214B] opacity-50">{{ (new Date(item.date*1000)).toLocaleDateString() }}</p>
 
-                    <div class="col-start-5 col-span-1 text-[#00214B] opacity-30 flex">
+                    <div v-if="item.systemgenereted != true" class="col-start-5 col-span-1 text-[#00214B] opacity-30 flex">
                         <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
                         <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can" class="w-auto h-[16px] ml-2" />
+                    </div>
+
+                    <div v-else class="col-start-5 col-span-1 text-[#00214B] opacity-30 flex justify-center">
+                        <fa style="cursor: pointer" @click="gotoSystem($event, index)" icon="lock" class="w-auto h-[16x]" />
                     </div>
 
                     <div class="absolute bottom-0 h-[3px] w-full bg-[#3A567A] opacity-5"></div>
@@ -62,9 +66,13 @@
 
                     <p class="col-start-4 col-span-1 text-[#00214B] opacity-50">{{ (new Date(item.date*1000)).toLocaleDateString() }}</p>
 
-                    <div class="col-start-5 col-span-1 text-[#00214B] opacity-30 flex">
+                    <div v-if="item.systemgenereted != true" class="col-start-5 col-span-1 text-[#00214B] opacity-30 flex">
                         <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
                         <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can" class="w-auto h-[16px] ml-2" />
+                    </div>
+
+                    <div v-else class="col-start-5 col-span-1 text-[#00214B] opacity-30 flex justify-center">
+                        <fa style="cursor: pointer" @click="gotoSystem($event, index)" icon="lock" class="w-auto h-[16x]" />
                     </div>
 
                     <div class="absolute bottom-0 h-[3px] w-full bg-[#3A567A] opacity-5"></div>
@@ -101,7 +109,7 @@ export default {
 
         async deleteFromDB(e, index) {
 
-            console.log(this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[index].id)
+            //console.log(this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[index].id)
 
             try {
                 await deleteDoc(doc(db, "stock", this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[index].id));
@@ -152,6 +160,25 @@ export default {
                     this.$store.state.errorMessage = ""
                 }, 5000)
 
+            }
+        },
+
+        gotoSystem(e, index){
+            let id = this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[index].tilhørendeSystem
+            let sysIdx = this.$store.state.systemer.indexOf(this.$store.state.systemer.find(system => system.id === id))
+
+            if (sysIdx == -1) {
+                this.$store.state.showErrorMessage = true
+                this.$store.state.errorMessage = "Systemet kunne ikke findes, da den IKKE er indlæst fra databasen endnu, indlæs flere systememner og prøv igen."
+                
+                setTimeout(() => {
+                    this.$store.state.showErrorMessage = false
+                    this.$store.state.errorMessage = ""
+                }, 5000)
+            } 
+            else {
+                this.$store.state.TempIndex = sysIdx
+                this.$router.push('/update_system')
             }
         }
     },

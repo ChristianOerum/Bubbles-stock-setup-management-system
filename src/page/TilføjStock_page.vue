@@ -129,7 +129,7 @@ export default {
                 let deliveryBool = null
 
                 if (this.correctionValue.includes('-')) {
-                    deliveryBool = false
+                    deliveryBool = true
                 } else {
                     deliveryBool = this.SelectedOptionLeveret.value
                 }
@@ -140,7 +140,8 @@ export default {
                         produkt_ref_id: this.SelectedOption.value,
                         date: new Date(this.dateValue),
                         beskrivelse: this.Beskrivelse,
-                        leveret: deliveryBool
+                        leveret: deliveryBool,
+                        Systemgenereted: false
                     });
                     
                     let productForQtCorrection = this.$store.state.lager.indexOf(this.$store.state.lager.find(product => product.id === this.SelectedOption.value))
@@ -148,9 +149,19 @@ export default {
 
                     const ref = doc(db, "produkter", this.$store.state.lager[productForQtCorrection].id
                     );
-                    await updateDoc(ref, {
-                        StockQT: this.$store.state.lager[productForQtCorrection].Qt_på_lager + Number(this.correctionValue)
-                    });
+                    if (Number(this.correctionValue) > 0 && deliveryBool != false) {
+                        await updateDoc(ref, {
+                            StockQT: this.$store.state.lager[productForQtCorrection].Qt_på_lager + Number(this.correctionValue)
+                        });
+                    }
+
+                    else if (Number(this.correctionValue) < 0 && deliveryBool != false) {
+                        await updateDoc(ref, {
+                            StockQT: this.$store.state.lager[productForQtCorrection].Qt_på_lager - (Number(this.correctionValue)*-1)
+                        });
+                    }
+
+                    
 
 
                     this.queryFirestore()
@@ -199,11 +210,24 @@ export default {
     },
     mixins: [queryFirestore],
     mounted(){
+
         this.$store.state.lager.forEach((item) => {
             this.DropdownOptions.push({lable: item.Produktnavn, value: item.id})
         })
 
         this.SelectedOptionLeveret = this.DropdownOptionsLeveret[1]
+
+        if (this.$store.state.TempId != "") {
+            let choosenIndex = this.DropdownOptions.indexOf(this.DropdownOptions.find(item => item.value === this.$store.state.TempId))
+            //console.log(choosenIndex)
+            this.SelectedOption = this.DropdownOptions[choosenIndex]
+        }
+
+        
+    },
+    unmounted(){
+        //sikre at hvis man er kommet til denne side via dashboarded, at væridien som definerer valgt produkt bliver nulstillet.
+        this.$store.state.TempId = ""
     }
 }
 </script>

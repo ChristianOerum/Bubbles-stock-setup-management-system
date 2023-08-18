@@ -78,7 +78,7 @@
 
             <div class="col-start-2">
 
-                <p class="indent-[3px] font-semibold">Produkter på system</p>
+                <p class="indent-[3px] font-semibold">Combo på system</p>
 
                 <div class="mt-1 indent-[14px] h-auto w-[400px] rounded-lg rounded-lg overflow-hidden">
                     <div v-for="(item, index) in this.BrugteProdukter" v-bind:key="index"
@@ -195,7 +195,8 @@ export default {
                     Leveretstatus: this.SelectedOptionLeveret.value,
                     Systemnavn: this.SystemNavn,
                     Tilknyttet: this.SelectedOptionEmployee.id,
-                    Beskrivelse: this.beskrivelse
+                    Beskrivelse: this.beskrivelse,
+                    StockFratrukket: false
                 });
 
                 this.queryFirestore();

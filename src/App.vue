@@ -11,6 +11,10 @@
       <preloader v-if="this.$store.state.showPreloader == true" class="absolute top-0 left-0"></preloader>
     </transition>
 
+    <transition name="fade" mode="out-in">
+      <Confirm_Alert v-if="this.$store.state.showConfirmation == true" class="absolute top-0 left-0"></Confirm_Alert>
+    </transition>
+
     <div class="absolute top-0 left-0 w-full flex flex-col">
 
       <transition name="fade" mode="out-in">
@@ -41,6 +45,7 @@ import Success_Alert from "./components/Success_Alert.vue";
 import preloader from "./components/preloader_view.vue";
 import Nav_menu from '../src/components/nav_menu.vue'
 import Error_Alert from "./components/Error_Alert.vue";
+import Confirm_Alert from "./components/Confirm_Alert.vue";
 
 export default defineComponent({
   name: "App",
@@ -48,7 +53,8 @@ export default defineComponent({
     Nav_menu,
     preloader,
     Error_Alert,
-    Success_Alert
+    Success_Alert,
+    Confirm_Alert
   },
   data() {
     return {

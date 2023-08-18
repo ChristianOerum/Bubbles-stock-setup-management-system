@@ -18,9 +18,9 @@
                 type="text" v-model="correctionValue" />
 
 
-            <p class="indent-[3px] font-semibold mt-2 mb-1 text-[#00214B]">Leverance bekræftet?</p>
+            <p v-if="this.correctionValue > 0" class="indent-[3px] font-semibold mt-2 mb-1 text-[#00214B]">Leverance bekræftet?</p>
 
-            <button @click.self="toggleDropdownLeveret"
+            <button v-if="this.correctionValue > 0" @click.self="toggleDropdownLeveret"
                 class="h-[40px] w-[400px] text-[#00214B] text-left indent-[15px] bg-white font-semibold rounded-lg">{{
                     SelectedOptionLeveret.value == null ? "Vælg" : SelectedOptionLeveret.lable }}</button>
             <div v-if="this.dropdownOpenLeveret"
@@ -65,6 +65,7 @@ export default {
             dateValue: new Date(this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].date * 1000).toISOString().substr(0, 10),
             beskrivelse: this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].beskrivelse,
             oldCorrectionValue: this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].Update,
+            oldSelectedOptionLeveret: [],
 
             dropdownOpenLeveret: false,
             DropdownOptionsLeveret: [
@@ -103,6 +104,15 @@ export default {
 
             if (this.correctionValue != "" && this.dateValue != null && this.DropdownOptionsLeveret.length != 0) {
 
+                let deliveryBool = null
+                console.log(this.correctionValue)
+                if (((this.correctionValue).toString()).includes('-')) {
+                    deliveryBool = true
+                    this.SelectedOptionLeveret = this.DropdownOptionsLeveret[0]
+                } else {
+                    deliveryBool = this.SelectedOptionLeveret.value
+                }
+
                 try {
                 const ref = doc(db, "stock", this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].id
                 );
@@ -110,7 +120,8 @@ export default {
                     date: new Date(this.dateValue),
                     update: Number(this.correctionValue),
                     beskrivelse: this.beskrivelse,
-                    leveret: this.SelectedOptionLeveret.value
+                    leveret: deliveryBool,
+                    Systemgenereted: false
                 });
 
 
@@ -118,26 +129,153 @@ export default {
                 let productForQtCorrection = this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].productRefId
                 let productForQtCorrectionId = this.$store.state.lager.indexOf(this.$store.state.lager.find(product => product.id === this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].productRefId))
 
-                console.log()
-
                 const ref2 = doc(db, "produkter", productForQtCorrection);
 
-                if (Number(this.correctionValue) > 0) {
-                    await updateDoc(ref2, {
-                        StockQT: (Number(this.correctionValue) - this.oldCorrectionValue) + this.$store.state.lager[productForQtCorrectionId].Qt_på_lager
-                    });
-                    console.log("1")
+
+                if (this.oldSelectedOptionLeveret.value == this.SelectedOptionLeveret.value) {
+
+                    if (this.correctionValue == this.oldCorrectionValue) {
+                        console.log("change nothing = do nothing")
+                    }
+
+                    else if (this.correctionValue > 0){
+
+                        if (this.correctionValue > this.oldCorrectionValue){
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager + (Number(this.correctionValue) - Number(this.oldCorrectionValue))
+                            console.log("1: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                        else if (this.correctionValue < this.oldCorrectionValue){
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager + (Number(this.correctionValue) - Number(this.oldCorrectionValue))
+                            console.log("2: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                    }
+
+                    else if (this.correctionValue < 0) {
+
+                        if (this.correctionValue > this.oldCorrectionValue){
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager + (Number(this.oldCorrectionValue) - Number(this.correctionValue))*-1
+                            console.log("3: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                        else if (this.correctionValue < this.oldCorrectionValue){
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager - (Number(this.oldCorrectionValue) - Number(this.correctionValue))
+                            console.log("4: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+                    }
                 } 
-                
-                else {
-                    await updateDoc(ref2, {
-                        StockQT: ((this.oldCorrectionValue - Number(this.correctionValue))*-1) + this.$store.state.lager[productForQtCorrectionId].Qt_på_lager
-                    });
-                    console.log("2")
+
+                else if (this.oldSelectedOptionLeveret.value == false && this.SelectedOptionLeveret.value == true) {
+
+                    if (this.correctionValue == this.oldCorrectionValue) {
+                        let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager + Number(this.correctionValue)
+                        console.log("5: " + qtUpdate)
+
+                        await updateDoc(ref2, {
+                            StockQT: qtUpdate
+                        });
+                    }
+
+                    else if (this.correctionValue > 0) {
+
+                        if (this.correctionValue > this.oldCorrectionValue) {
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager + Number(this.correctionValue)
+                            console.log("6: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                        if (this.correctionValue < this.oldCorrectionValue) {
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager + Number(this.correctionValue)
+                            console.log("7: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                    }
+
+                    else if (this.correctionValue < 0) {
+
+                        if (this.correctionValue > this.oldCorrectionValue) {
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager - (Number(this.correctionValue))*-1
+                            console.log("9: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                        if (this.correctionValue < this.oldCorrectionValue) {
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager - (Number(this.correctionValue))*-1
+                            console.log("10: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+                    }
+                }
+
+                else if (this.oldSelectedOptionLeveret.value == true && this.SelectedOptionLeveret.value == false) {
+
+                    if (this.correctionValue == this.oldCorrectionValue) {
+                        let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager - Number(this.correctionValue)
+                        console.log("11: " + qtUpdate)
+
+                        await updateDoc(ref2, {
+                            StockQT: qtUpdate
+                        });
+                    }
+
+                    else if (this.correctionValue > 0) {
+                        
+                        if (this.correctionValue > this.oldCorrectionValue){
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager - Number(this.correctionValue)
+                            console.log("12: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                        if (this.correctionValue < this.oldCorrectionValue){
+                            let qtUpdate = this.$store.state.lager[productForQtCorrectionId].Qt_på_lager - Number(this.correctionValue)
+                            console.log("13: " + qtUpdate)
+
+                            await updateDoc(ref2, {
+                                StockQT: qtUpdate
+                            });
+                        }
+
+                    }
+
                 }
 
                 this.queryFirestore();
                 this.$router.push('/lager')
+
+
 
 
                 console.log("Updated " + this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].id + " from: stock");
@@ -191,9 +329,11 @@ export default {
         try {
             if (this.$store.state.lagerUdInd[this.$store.state.TempIndex].LagerUpdatesRef[this.$store.state.TempIndex2].leveret == true) {
                 this.SelectedOptionLeveret = this.DropdownOptionsLeveret[0]
+                this.oldSelectedOptionLeveret = this.DropdownOptionsLeveret[0]
             }
             else {
                 this.SelectedOptionLeveret = this.DropdownOptionsLeveret[1]
+                this.oldSelectedOptionLeveret = this.DropdownOptionsLeveret[1]
             }
 
             } catch (error) {

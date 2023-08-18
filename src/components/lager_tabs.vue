@@ -27,7 +27,7 @@
         <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square" class="w-auto h-[16x]" />
       </div>
 
-      <div class="bg-[#EFF3F8] bottom-[0px] w-full h-[4px] absolute"></div>
+      <div class="bg-[#EFF3F8] bottom-[0px] w-full h-[3px] absolute"></div>
     </div>
 
   </div>

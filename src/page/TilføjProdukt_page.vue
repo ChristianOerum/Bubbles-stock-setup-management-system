@@ -40,9 +40,6 @@ export default {
     components: {
     },
     methods: {
-        goToLagerPage() {
-            this.$store.state.visiblePage = "Lager"
-        },
 
         async createProdukt() {
 

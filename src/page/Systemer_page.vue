@@ -48,8 +48,7 @@
 
                 <div class="w-[100%] h-[100%] row-start-2 grid gap-[14px]" style="grid-template-columns: 55% 45%">
 
-                    <div class="w-[100%] min-h-0 bg-white col-start-1 col-span-1 rounded-2xl grid overflow-hidden"
-                        style="grid-template-rows: 50px 45px 15fr">
+                    <div class="w-[100%] min-h-0 bg-white col-start-1 col-span-1 rounded-2xl grid overflow-hidden" style="grid-template-rows: 50px 45px 15fr">
 
                         <div class="w-[100%] h-[100%] row-start-1 row-span-1 items-center text-[19px] font-bold flex flex-row relative">
                             <h1 class="relative left-[15px] text-[16px] font-bold text-[#00214B]">Systemer til opsæting {{ "(" + this.$store.state.systemer.length + ")" }}</h1>

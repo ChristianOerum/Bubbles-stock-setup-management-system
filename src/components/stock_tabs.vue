@@ -25,7 +25,7 @@
                 <p @click="goToOverview($event, index)" class="p-1 pl-3 pr-3 text-[12px]">Se oversigt</p>
             </button>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
         </div>
 
     </div>
@@ -74,12 +74,6 @@ export default {
 
             }
 
-        },
-
-        editStock(e, index) {
-            this.$store.state.TempIndex = index
-            console.log(this.$store.state.TempIndex)
-            this.$router.push('/update_stock')
         },
         goToOverview(e, index) {
             this.$store.state.TempIndex = index

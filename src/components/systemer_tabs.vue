@@ -38,14 +38,14 @@
             </h1>
 
 
-            <div class="col-start-6 col-span-1 text-[#9AA8BA]">
+            <div class="col-start-6 col-span-1 text-[#9AA8BA] flex justify-center">
                 <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square"
                     class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
+                <fa v-if="item.stockFratrukket != true" style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
                     class="w-auto h-[16px] ml-2" />
             </div>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
 
 
         </div>
@@ -80,14 +80,14 @@
             </h1>
 
 
-            <div class="col-start-6 col-span-1 text-[#9AA8BA]">
+            <div class="col-start-6 col-span-1 text-[#9AA8BA] flex justify-center">
                 <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square"
                     class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
+                <fa v-if="item.stockFratrukket != true"  style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
                     class="w-auto h-[16px] ml-2" />
             </div>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
 
 
         </div>
@@ -124,14 +124,14 @@
             </h1>
 
 
-            <div class="col-start-6 col-span-1 text-[#9AA8BA]">
+            <div class="col-start-6 col-span-1 text-[#9AA8BA] flex justify-center">
                 <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square"
                     class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
+                <fa v-if="item.stockFratrukket != true"  style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
                     class="w-auto h-[16px] ml-2" />
             </div>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
 
 
         </div>
@@ -167,14 +167,14 @@
             </h1>
 
 
-            <div class="col-start-6 col-span-1 text-[#9AA8BA]">
+            <div class="col-start-6 col-span-1 text-[#9AA8BA] flex justify-center">
                 <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square"
                     class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
+                <fa v-if="item.stockFratrukket != true" style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
                     class="w-auto h-[16px] ml-2" />
             </div>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
 
 
         </div>
@@ -211,14 +211,14 @@
             </h1>
 
 
-            <div class="col-start-6 col-span-1 text-[#9AA8BA]">
+            <div class="col-start-6 col-span-1 text-[#9AA8BA] flex justify-center">
                 <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square"
                     class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
+                <fa v-if="item.stockFratrukket != true"  style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
                     class="w-auto h-[16px] ml-2" />
             </div>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
 
 
         </div>
@@ -254,14 +254,14 @@
             </h1>
 
 
-            <div class="col-start-6 col-span-1 text-[#9AA8BA]">
+            <div class="col-start-6 col-span-1 text-[#9AA8BA] flex justify-center">
                 <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square"
                     class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
+                <fa v-if="item.stockFratrukket != true" style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
                     class="w-auto h-[16px] ml-2" />
             </div>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
 
 
         </div>
@@ -297,14 +297,14 @@
             </h1>
 
 
-            <div class="col-start-6 col-span-1 text-[#9AA8BA]">
+            <div class="col-start-6 col-span-1 text-[#9AA8BA] flex justify-center">
                 <fa style="cursor: pointer" @click="editFromDB($event, index)" icon="pen-to-square"
                     class="w-auto h-[16x]" />
-                <fa style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
+                <fa v-if="item.stockFratrukket != true" style="cursor: pointer" @click="deleteFromDB($event, index)" icon="trash-can"
                     class="w-auto h-[16px] ml-2" />
             </div>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
 
 
         </div>

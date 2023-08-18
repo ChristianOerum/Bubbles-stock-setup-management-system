@@ -80,6 +80,7 @@ export default {
           this.$store.state.systemer = [];
   
           docRef.forEach((doc) => {
+      
             this.$store.state.systemer.push({
               Systemnavn: doc.data().Systemnavn,
               Opsatstatus: doc.data().Opsatstatus,
@@ -88,7 +89,8 @@ export default {
               Brugte_produkter: doc.data().Brugte_produkter,
               id: doc.id,
               tilknyttet: doc.data().Tilknyttet,
-              beskrivelse: doc.data().Beskrivelse
+              beskrivelse: doc.data().Beskrivelse,
+              stockFratrukket: doc.data().StockFratrukket
             });
           });
 
@@ -106,7 +108,7 @@ export default {
                   for(let i = 0; i < child.qt; i++){
     
                     let childRelatedCombo = this.$store.state.combos.find(combo => combo.id === child.id)
-                    
+                     
                     childRelatedCombo.comboIds.forEach((relatedProductId) => {
                       let tempProductIndex = this.$store.state.lager.indexOf(this.$store.state.lager.find(product => product.id === relatedProductId))
                       this.$store.state.lager[tempProductIndex].Qt_behov_til_systemer += 1
@@ -139,7 +141,7 @@ export default {
           this.$store.state.systemer = [];
 
 
-          console.log((this.$store.state.systemQueryAmountMultiplier*10) + this.$store.state.systemer.length)
+          //console.log((this.$store.state.systemQueryAmountMultiplier*10) + this.$store.state.systemer.length)
 
 
           docRef.forEach((doc) => {
@@ -151,7 +153,8 @@ export default {
               Brugte_produkter: doc.data().Brugte_produkter,
               id: doc.id,
               tilknyttet: doc.data().Tilknyttet,
-              beskrivelse: doc.data().Beskrivelse
+              beskrivelse: doc.data().Beskrivelse,
+              stockFratrukket: doc.data().StockFratrukket
             });
           });
 
@@ -275,6 +278,8 @@ export default {
           //sammenlæg de 2 querys
           const combinedData = queryResult1.concat(queryResult2);
           
+          //sorter arrayet efter dato
+          combinedData.sort((a, b) => a.date.toDate() - b.date.toDate());
 
           //calc related to stock items.
           this.$store.state.lagerUdInd = [];
@@ -283,10 +288,10 @@ export default {
           let qtInd = 0
           let qtUd = 0
           let qtPåVej = 0
-  
+
           combinedData.forEach((doc) => {
+
             let temp_indexing_of_arr = this.$store.state.lager.map((ref) => ref.id).indexOf(doc.produkt_ref_id);
-  
             if (doc.leveret != true) {
   
               this.$store.state.lager[temp_indexing_of_arr].LagerIncommingDelivery = true
@@ -297,11 +302,15 @@ export default {
               }
   
             }
-  
+            
+
             //stock tab group beregning
             if (previousDate == new Date((doc.date.seconds)*1000).toLocaleDateString() || previousDate == 0) {
+
               previousDate = new Date((doc.date.seconds)*1000).toLocaleDateString()
-            } else {
+            } 
+            
+            else {
   
               //sorter lager opdaterings array efter alfabetisk orden.
               tempArr.sort(function (a, b) {
@@ -334,14 +343,71 @@ export default {
               qtUd += doc.update
             }
   
-            tempArr.push({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.date.seconds, Update: doc.update, id: doc.id, productRefId: doc.produkt_ref_id,  beskrivelse: doc.beskrivelse, leveret: doc.leveret});
+            tempArr.push({Produktnavn: this.$store.state.lager[temp_indexing_of_arr].Produktnavn, date: doc.date.seconds, Update: doc.update, id: doc.id, productRefId: doc.produkt_ref_id,  beskrivelse: doc.beskrivelse, leveret: doc.leveret, systemgenereted: doc.Systemgenereted, tilhørendeSystem: doc.TilhørendeSystem});
           
           });
   
           this.$store.state.lagerUdInd.unshift({Date: previousDate, LagerUpdatesRef: tempArr, Ind: qtInd, Ud: qtUd, PåVej: qtPåVej});
-  
 
-          //console.log(this.$store.state.lager)
+
+      
+
+
+          //dashboard alerts
+
+          //leverancer
+          this.$store.state.leverancerDashboard = []
+
+          this.$store.state.lagerUdInd.forEach((parentItem) => {
+            parentItem.LagerUpdatesRef.forEach((childItem) => {
+       
+                if (childItem.leveret == false) {
+                  this.$store.state.leverancerDashboard.unshift({Produktnavn: childItem.Produktnavn, Update: childItem.Update, beskrivelse: childItem.beskrivelse, date: childItem.date, id: childItem.id, leveret: childItem.leveret, productRefId: childItem.productRefId});
+                }
+
+            });
+          });
+
+
+          //systemer
+          this.$store.state.systemerDashboard = []
+          this.$store.state.systemerRed = false
+          
+          this.$store.state.systemer.forEach((parentItem) => {
+            if (parentItem.Opsatstatus == false) {
+
+              this.$store.state.systemerRed = true
+
+              this.$store.state.systemerDashboard.push({
+                Systemnavn: parentItem.Systemnavn,
+                Opsatstatus: parentItem.Opsatstatus,
+                Leveretstatus: parentItem.Leveretstatus,
+                Brugsdato: parentItem.Brugsdato,
+                Brugte_produkter: parentItem.Brugte_produkter,
+                id: parentItem.id,
+                tilknyttet: parentItem.tilknyttet,
+                beskrivelse: parentItem.beskrivelse
+              });
+
+
+            }
+
+          })
+
+
+          //stock
+          this.$store.state.lager.forEach((item) => {
+            if (item.Threshold > item.Qt_på_lager && item.ForfaldDato != null) {
+              this.$store.state.stockStatus = "red"
+            }
+
+            else if (this.$store.state.stockStatus == "" && item.Threshold > item.Qt_på_lager) {
+              this.$store.state.stockStatus = "yellow"
+            }
+
+          })
+
+
           //console.log(this.$store.state.lagerUdInd)
 
           this.$store.state.showPreloader = false

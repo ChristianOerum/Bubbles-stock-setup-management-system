@@ -11,7 +11,7 @@
 
             <h1 class="col-start-3 opacity-50 col-span-1">N/A</h1>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
         </div>
 
 
@@ -25,7 +25,7 @@
 
             <h1 class="col-start-3 opacity-50 col-span-1">{{ item.ForfaldDato }}</h1>
 
-            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[4px] absolute"></div>
+            <div class="bg-[#3A567A] opacity-5 bottom-[0px] w-[100%] h-[3px] absolute"></div>
         </div>
         
 

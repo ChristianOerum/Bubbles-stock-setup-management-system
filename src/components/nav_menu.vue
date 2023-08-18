@@ -1,7 +1,7 @@
 <template>
     <div v-if="name != '/login'" class="h-[100vh] w-[130px]">
         <SVGcreater style="cursor: pointer" @click="$router.push('/dashboard')" name="logo" class="h-auto w-[200px] left-[30px] top-[20px] absolute"></SVGcreater>
-        <p class="absolute w-max text-[#00214B] text-[12px] left-[225px] top-[56px] font-medium">v1.31 (beta)</p>
+        <p class="absolute w-max text-[#00214B] text-[12px] left-[225px] top-[56px] font-medium">v1.37 (beta)</p>
 
         <div v-auto-animate class="w-[100px] h-auto absolute top-[100px] flex flex-col justify-center items-center">
 
